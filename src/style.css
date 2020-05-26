@@ -1,0 +1,26 @@
+#container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#container #stage {
+    background: #6b543d;
+    padding: 10px;
+}
+
+#container #info {
+    width: 200px;
+    height: 500px;
+    margin-left: 10px;
+}
+
+#container #info button {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#container #info textarea {
+    width: 97%;
+    height: 100%;
+}
