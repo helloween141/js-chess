@@ -1,16 +1,18 @@
 import { BOARD_CELLS_COUNT } from '../global'
 
 class AI {
-  constructor(color) {
-    this.color = color
+  constructor(name, color) {
     this.selectedFigure = null
+    this.name = name
+    this.color = color
   }
 
-  _getPossibleSteps(cells) {
+  _getActions(cells) {
     let result = []
     for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
       for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
         const figure = cells[j][i].figure
+        
         if (figure && figure.color === this.color) {
           /*
                 Всякие разные проверки (шах, возможность срубить и так далее)
@@ -25,19 +27,28 @@ class AI {
         }
       }
     }
+
     return result
   }
 
   getMove(cells) {
-    const possibleSteps = this._getPossibleSteps(cells)
-    if (possibleSteps.length > 0) {
-      const figureId = Math.floor(possibleSteps.length * Math.random())
-      const figureMoves = possibleSteps[figureId].moves
-      this.selectedFigure = possibleSteps[figureId].figure
+    const possibleActions = this._getActions(cells)
 
-      return figureMoves[Math.floor(figureMoves.length * Math.random())]
+    if (possibleActions.length > 0) {
+      const actionId = Math.floor(possibleActions.length * Math.random())
+
+      const figure = possibleActions[actionId].figure
+      const moveTo = possibleActions[actionId].moves[Math.floor(possibleActions[actionId].moves.length * Math.random())] 
+
+      return {
+        startX: figure.getPositionPoint().x,
+        startY: figure.getPositionPoint().y,
+        endX: moveTo[0],
+        endY: moveTo[1]
+      }
+
     } else {
-      return []
+      return null
     }
   }
 }

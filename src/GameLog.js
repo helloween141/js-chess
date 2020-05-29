@@ -3,14 +3,14 @@ class GameLog {
         this.$el = document.getElementById('log')
     }
 
-    addMoveInfo(color, moveFrom, moveTo) {
-        const name = color === 'white' ? 'белых' : 'черных'
-
-        this.$el.value += `Ход ${name}: с ${moveFrom} на ${moveTo} \n\r`
+    addMoveInfo(color, move) {
+        this.$el.value += `Ход ${color}: с ${move.startX}:${move.startY} на ${move.endX}:${move.endY} \n\r`
+        this.$el.scrollTop = this.$el.scrollHeight
     }
 
     addCustomInfo(text) {
         this.$el.value += `${text} \n\r`
+        this.$el.scrollTop = this.$el.scrollHeight
     }
 
     clear() {

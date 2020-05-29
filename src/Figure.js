@@ -1,9 +1,6 @@
 import { BOARD_CELLS_COUNT, ANIMATION_SPEED, CELL_SIZE } from './global'
 
 class Figure {
-  constructor() {
-
-  }
 
   getPositionPoint() {
     return {

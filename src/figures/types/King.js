@@ -6,7 +6,7 @@ class King extends Figure {
     this.name = name
     this.color = color
     this.image = this.createImage(sprite)
-
+    this.isShah = false
     this.canCastling = true // Возможность рокировки
   }
 

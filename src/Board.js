@@ -83,14 +83,7 @@ class Board {
 
       // Если фигура была уже выбрана, либо есть возможность срубить
       if (this.selectedFigure && (!selectedSpot.figure || selectedSpot.figure.color !== playerColor)) {
-        moves = this.selectedFigure.getMoves(this.cells)
-
-        return moves.find(move => {
-          if (move[0] == posX && move[1] == posY) {
-            return move
-          }
-        }) 
-
+        return this.selectedFigure
       }
       // Иначе подсветка возможных ходов
       else if (selectedSpot.figure && playerColor === selectedSpot.figure.color) {
@@ -103,35 +96,34 @@ class Board {
     return null
   }
 
-  makeMove(endX, endY) {
-    this.selectedFigure.endPosPoint = {
-      x: endX,
-      y: endY
-    }
-    this.selectedFigure.endPosPixels = {
-      x: CELL_SIZE / 2 + endX * CELL_SIZE - 2,
-      y: CELL_SIZE / 2 + endY * CELL_SIZE - 2
-    }
-    this.selectedFigure.moveVector = {
-      x: this.selectedFigure.getImage().attrs.x > this.selectedFigure.endPosPixels.x ? -1 : 1,
-      y: this.selectedFigure.getImage().attrs.y > this.selectedFigure.endPosPixels.y ? -1 : 1
-    }
-  }
+  updateMove(move, endMoveCallback) {
+    if (this.selectedFigure) {
 
+      this.selectedFigure.endPosPoint = {
+        x: move.endX,
+        y: move.endY
+      }
+      this.selectedFigure.endPosPixels = {
+        x: CELL_SIZE / 2 + move.endX * CELL_SIZE - 2,
+        y: CELL_SIZE / 2 + move.endY * CELL_SIZE - 2
+      }
+      this.selectedFigure.moveVector = {
+        x: this.selectedFigure.getImage().attrs.x > this.selectedFigure.endPosPixels.x ? -1 : 1,
+        y: this.selectedFigure.getImage().attrs.y > this.selectedFigure.endPosPixels.y ? -1 : 1
+      }
 
-  update(endMoveCallback) {
       this.selectedFigure.updateMoveAnimation(figure => {
         // Если пешка дошла до противоположного конца, то она превращается в ферзя
-        if (figure.name === 'P' && (figure.endPosPoint.y === 0 || figure.endPosPoint.y === BOARD_CELLS_COUNT)) {
-          figure = FigureFactory.create({
-            name: 'Q',
-            color: figure.color,
-            sprite: this.figuresSprite
-          })
+        if (figure.name === 'P' && (figure.endPosPoint.y === 0 || figure.endPosPoint.y === (BOARD_CELLS_COUNT - 1))) {
+            figure = FigureFactory.create({
+              name: 'Q',
+              color: figure.color,
+              sprite: this.figuresSprite
+            })
         }
-        
+          
         if (figure.name === 'K') {
-          this.canCastling = false
+            this.canCastling = false
         }
 
         this.cells[this.selectedFigure.endPosPoint.y][this.selectedFigure.endPosPoint.x].figure = figure
@@ -142,6 +134,7 @@ class Board {
 
         endMoveCallback(true)
       })
+    }
   }
 
   _drawLabels(i) {
