@@ -13,6 +13,8 @@ class Player {
   getMove(cells) {
     return this.type.getMove(cells)
   }
+
+  
 }
 
 export default Player

@@ -99,22 +99,17 @@ class Board {
   updateMove(move, endMoveCallback) {
     if (this.selectedFigure) {
 
-      this.selectedFigure.endPosPoint = {
-        x: move.endX,
-        y: move.endY
-      }
-      this.selectedFigure.endPosPixels = {
-        x: CELL_SIZE / 2 + move.endX * CELL_SIZE - 2,
-        y: CELL_SIZE / 2 + move.endY * CELL_SIZE - 2
-      }
+      this.selectedFigure.endPosPixels = this.selectedFigure.toPixels(move.endX, move.endY)
+ 
       this.selectedFigure.moveVector = {
         x: this.selectedFigure.getImage().attrs.x > this.selectedFigure.endPosPixels.x ? -1 : 1,
         y: this.selectedFigure.getImage().attrs.y > this.selectedFigure.endPosPixels.y ? -1 : 1
       }
 
+      // Окончание анимации
       this.selectedFigure.updateMoveAnimation(figure => {
         // Если пешка дошла до противоположного конца, то она превращается в ферзя
-        if (figure.name === 'P' && (figure.endPosPoint.y === 0 || figure.endPosPoint.y === (BOARD_CELLS_COUNT - 1))) {
+        if (figure.name === 'P' && (move.endY === 0 || move.endY === (BOARD_CELLS_COUNT - 1))) {
             figure = FigureFactory.create({
               name: 'Q',
               color: figure.color,
@@ -126,9 +121,9 @@ class Board {
             this.canCastling = false
         }
 
-        this.cells[this.selectedFigure.endPosPoint.y][this.selectedFigure.endPosPoint.x].figure = figure
-        this.cells[this.selectedFigure.y][this.selectedFigure.x].figure = null
-        figure.setPositionPoint(this.selectedFigure.endPosPoint.x, this.selectedFigure.endPosPoint.y)
+        this.cells[move.endY][move.endX].figure = figure
+        this.cells[move.startY][move.startX].figure = null
+        figure.setPositionPoint(move.endX, move.endY)
 
         this.selectedFigure = null
 

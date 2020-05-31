@@ -24,14 +24,18 @@ class Figure {
   }
   
   setImagePositionPixels(x, y) {
-    this.getImage().position({
-      x: CELL_SIZE / 2 + x * CELL_SIZE - 2,
-      y: CELL_SIZE / 2 + y * CELL_SIZE - 2,
-    })
+    this.getImage().position(this.toPixels(x, y))
   }
   
   getImage() {
     return this.image
+  }
+
+  toPixels(x, y) {
+    return {
+      x: CELL_SIZE / 2 + x * CELL_SIZE - 2,
+      y: CELL_SIZE / 2 + y * CELL_SIZE - 2,
+    }
   }
 
   createImage(sprite) {
@@ -86,7 +90,7 @@ class Figure {
           y: imagePosY
         })
     } else {
-      finishAnimationCallback(this) 
+      return finishAnimationCallback(this) 
     }
   }
 

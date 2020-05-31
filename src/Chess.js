@@ -50,7 +50,7 @@ class Chess {
     }
 
     if (this.currentPlayer.type instanceof AI) {
-      this.gameLoop(this.currentPlayer.getMove(this.board.cells))
+      this.gameLoop(this.currentPlayer.type.getMove(this.board.cells))
     }
 
     this.render()
@@ -81,7 +81,7 @@ class Chess {
 
         // Вызов хода AI, если он существует
         if (this.currentPlayer.type instanceof AI) {
-          this.gameLoop(this.currentPlayer.getMove(this.board.cells))
+          this.gameLoop(this.currentPlayer.type.getMove(this.board.cells))
         }
 
       })
