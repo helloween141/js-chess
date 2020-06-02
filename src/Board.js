@@ -95,30 +95,23 @@ class Board {
 
     return null
   }
+  
 
-  updateMove(move, endMoveCallback) {
-    if (this.selectedFigure) {
-
-      this.selectedFigure.endPosPixels = this.selectedFigure.toPixels(move.endX, move.endY)
- 
-      this.selectedFigure.moveVector = {
-        x: this.selectedFigure.getImage().attrs.x > this.selectedFigure.endPosPixels.x ? -1 : 1,
-        y: this.selectedFigure.getImage().attrs.y > this.selectedFigure.endPosPixels.y ? -1 : 1
-      }
-
+  updateMove(move) {
+    return new Promise(resolve => {
       // Окончание анимации
-      this.selectedFigure.updateMoveAnimation(figure => {
-        // Если пешка дошла до противоположного конца, то она превращается в ферзя
+      this.selectedFigure.updateMoveAnimation().then(figure => {
+      // Если пешка дошла до противоположного конца, то она превращается в ферзя
         if (figure.name === 'P' && (move.endY === 0 || move.endY === (BOARD_CELLS_COUNT - 1))) {
-            figure = FigureFactory.create({
-              name: 'Q',
-              color: figure.color,
-              sprite: this.figuresSprite
-            })
+          figure = FigureFactory.create({
+            name: 'Q',
+            color: figure.color,
+            sprite: this.figuresSprite
+          })
         }
-          
+            
         if (figure.name === 'K') {
-            this.canCastling = false
+          this.canCastling = false
         }
 
         this.cells[move.endY][move.endX].figure = figure
@@ -127,9 +120,9 @@ class Board {
 
         this.selectedFigure = null
 
-        endMoveCallback(true)
+        resolve(true)
       })
-    }
+    })
   }
 
   _drawLabels(i) {

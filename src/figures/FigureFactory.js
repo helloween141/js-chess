@@ -6,7 +6,7 @@ import King from './types/King'
 import Queen from './types/Queen'
 
 class FigureFactory {
-  static create({name, color, sprite}) {
+  static create({ name, color, sprite }) {
     switch (name) {
       case 'P':
         return new Pawn(name, color, sprite) // Пешка

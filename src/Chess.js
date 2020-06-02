@@ -58,10 +58,12 @@ class Chess {
  
   gameLoop(move = null) {
     if (move) {
-      this.board.selectedFigure = this.board.cells[move.startY][move.startX].figure
       this.isUpdating = true
+      
+      this.board.selectedFigure = this.board.cells[move.startY][move.startX].figure
+      this.board.selectedFigure.prepareAnimation(move)
 
-      this.update(move, () => {
+      this.update(move).then(() => {
         this.isUpdating = false
         window.cancelAnimationFrame(this.loop);
 
@@ -83,30 +85,30 @@ class Chess {
         if (this.currentPlayer.type instanceof AI) {
           this.gameLoop(this.currentPlayer.type.getMove(this.board.cells))
         }
-
       })
     }
   }
 
-  update(move, updateDone) {
-    const self = this
+  update(move) {
+    return new Promise(resolve => {
+      const self = this
   
-    window.requestAnimFrame = window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function(callback) {
-      window.setTimeout(callback, 1000 / 60)
-    };
-    
-    (function animLoop(){
-      self.loop = requestAnimFrame(animLoop);
-      self.board.updateMove(move, result => {
-        if (result) {
-          updateDone()
-        }
-      })
-      self.render()
-    })(); 
+      window.requestAnimFrame = window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      function(callback) {
+        window.setTimeout(callback, 1000 / 60)
+      };
+      
+      (function animLoop(){
+        self.loop = requestAnimFrame(animLoop);
+        self.board.updateMove(move).then(result => {
+          resolve(result)
+        })
+        self.render()
+      })(); 
+
+    })
   }
 
   _rollColor() {
