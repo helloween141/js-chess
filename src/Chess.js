@@ -14,7 +14,7 @@ class Chess {
     this.isUpdating = false
   }
 
-  startGame(typePlayerOne, typePlayerTwo) {
+  startGame(typePlayerOne = AI, typePlayerTwo = AI) {
     // Очистка
     if (this.board) {
       this._destroy()
@@ -24,20 +24,20 @@ class Chess {
 
     // Создание игроков
     const colors = this._rollColor()
-    this.playerOne = new Player(typePlayerOne, 'Компьютер 1', colors.colorOne)
-    this.playerTwo = new Player(typePlayerTwo, 'Компьютер 2', colors.colorTwo)
+    this.playerOne = new Player(typePlayerOne, 'Компьютер 1', colors.colorOne, this.board.getFiguresByColor(colors.colorOne))
+    this.playerTwo = new Player(typePlayerTwo, 'Компьютер 2', colors.colorTwo, this.board.getFiguresByColor(colors.colorTwo))
 
     // Определение игрока, который ходит первым
     this.currentPlayer = this.playerOne.isCurrent ? this.playerOne : this.playerTwo
-
+  
     // Если есть живой игрок, то создаем listener для stage
-    if (this.playerOne.type instanceof Human || this.typePlayerTwo.type instanceof Human) {
+    if (typePlayerOne === Human || typePlayerTwo === Human) {
       this.stage.on('click', (e) => {       
         if (this.currentPlayer.type instanceof Human && !this.isUpdating) {
-          let mousePos = this.stage.getPointerPosition()
+          let mousePosition = this.stage.getPointerPosition()
       
-          let cellX = Math.round(mousePos.x / 70) - 1
-          let cellY = Math.round(mousePos.y / 70) - 1  
+          let cellX = Math.round(mousePosition.x / 70) - 1
+          let cellY = Math.round(mousePosition.y / 70) - 1  
           
           const figure = this.board.selectSpot(cellX, cellY, this.currentPlayer.color)
           if (figure) {

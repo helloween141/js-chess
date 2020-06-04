@@ -4,21 +4,11 @@ import './style.css'
 import Chess from './Chess'
 
 const chess = new Chess()
+chess.startGame()
 
 document.getElementById('start').addEventListener('click', (e) => {
   chess.startGame()
-});
-
-// stage.on('click', (e) => {
-//   let mousePos = stage.getPointerPosition()
-
-//   let cellX = Math.round(mousePos.x / 70) - 1
-//   let cellY = Math.round(mousePos.y  / 70) - 1
-//   chess.humanStep(cellX, cellY)  
-//   chess.render()
-// });
-
-
+})
 
 
 

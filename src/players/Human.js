@@ -1,8 +1,9 @@
 class Human {
-  constructor(name, color) {
+  constructor(name, color, figures) {
     this.selectedFigure = null
     this.name = name
     this.color = color
+    this.figures = figures
   }
 
   getMove(cells, figure, clickX, clickY) {

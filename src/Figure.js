@@ -13,10 +13,10 @@ class Figure {
     this.x = x
     this.y = y
 
-    this.setImagePositionPixels(x, y)
+    this.setPositionPixels(this.toPixels(x), this.toPixels(y))
   }
 
-  getImagePositionPixels() {
+  getPositionPixels() {
     return {
       imagePosX: this.image.attrs.x,
       imagePosY: this.image.attrs.y
@@ -24,19 +24,16 @@ class Figure {
   }
   
   
-  setImagePositionPixels(x, y) {
-    this.getImage().position(this.toPixels(x, y))
+  setPositionPixels(x, y) {
+    this.getImage().position({x, y})
   }
   
   getImage() {
     return this.image
   }
 
-  toPixels(x, y) {
-    return {
-      x: CELL_SIZE / 2 + x * CELL_SIZE - 2,
-      y: CELL_SIZE / 2 + y * CELL_SIZE - 2,
-    }
+  toPixels(val) {
+    return CELL_SIZE / 2 + val * CELL_SIZE - 2
   }
 
   createImage(sprite) {
@@ -71,7 +68,11 @@ class Figure {
   }
   
   prepareAnimation(move) {
-    this.endPosPixels = this.toPixels(move.endX, move.endY)
+    this.endPosPointer = move
+    this.endPosPixels = {
+      x: this.toPixels(move.endX),
+      y: this.toPixels(move.endY)
+    }
   
     this.moveVector = {
       x: this.getImage().attrs.x > this.endPosPixels.x ? -1 : 1,
@@ -81,7 +82,7 @@ class Figure {
 
   updateMoveAnimation() {
     return new Promise(resolve => {
-      let { imagePosX, imagePosY } = this.getImagePositionPixels()
+      let { imagePosX, imagePosY } = this.getPositionPixels()
 
       // Движение по OY
       if (this.moveVector.y < 0)
@@ -95,16 +96,10 @@ class Figure {
       else
         imagePosX = (imagePosX < this.endPosPixels.x) ? imagePosX + ANIMATION_SPEED : this.endPosPixels.x
 
-      if ((imagePosX !== this.endPosPixels.x) || (imagePosY !== this.endPosPixels.y)) {
-          this.image.position({
-            x: imagePosX,
-            y: imagePosY
-          })
+      if (imagePosX !== this.endPosPixels.x || imagePosY !== this.endPosPixels.y) {
+        this.setPositionPixels(imagePosX, imagePosY)
       } else {
-        this.image.position({
-          x: this.endPosPixels.x,
-          y: this.endPosPixels.y
-        })       
+        this.setPositionPoint(this.endPosPointer.endX, this.endPosPointer.endY)
         resolve(this) 
       }
     }

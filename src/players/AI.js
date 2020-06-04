@@ -1,32 +1,44 @@
 import { BOARD_CELLS_COUNT } from '../global'
 
 class AI {
-  constructor(name, color) {
+  constructor(name, color, figures) {
     this.selectedFigure = null
     this.name = name
     this.color = color
+    this.figures = figures
   }
 
   _getActions(cells) {
-    let result = []
-    for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
-      for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
-        const figure = cells[j][i].figure
-        
-        if (figure && figure.color === this.color) {
-          /*
-                Всякие разные проверки (шах, возможность срубить и так далее)
-          */
-          const moves = figure.getMoves(cells)
-          if (moves.length > 0) {
-            result.push({
-              figure,
-              moves,
-            })
-          }
-        }
+    const result = []
+    console.log(this.figures)
+    this.figures.forEach(figure => {
+      const moves = figure.getMoves(cells)
+      if (moves.length > 0) {
+        result.push({
+          figure,
+          moves,
+        })
       }
-    }
+    })
+
+    // for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
+    //   for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
+    //     const figure = cells[j][i].figure
+        
+    //     if (figure && figure.color === this.color) {
+    //       /*
+    //             Всякие разные проверки (шах, возможность срубить и так далее)
+    //       */
+    //       const moves = figure.getMoves(cells)
+    //       if (moves.length > 0) {
+    //         result.push({
+    //           figure,
+    //           moves,
+    //         })
+    //       }
+    //     }
+    //   }
+    // }
 
     return result
   }

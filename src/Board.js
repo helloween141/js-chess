@@ -69,6 +69,20 @@ class Board {
     }
   }
 
+
+  getFiguresByColor(color) {
+    const result = []
+    for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
+      for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
+        const figure = this.cells[i][j].figure
+        if (figure && figure.color === color) {
+          result.push(figure)
+        }
+      }
+    }
+    return result
+  }
+
   selectSpot(posX, posY, playerColor) {
     if (posX >= 0 && posX < BOARD_CELLS_COUNT && posY >= 0 && posY < BOARD_CELLS_COUNT) {
 
@@ -116,7 +130,6 @@ class Board {
 
         this.cells[move.endY][move.endX].figure = figure
         this.cells[move.startY][move.startX].figure = null
-        figure.setPositionPoint(move.endX, move.endY)
 
         this.selectedFigure = null
 

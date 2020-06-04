@@ -2,10 +2,11 @@ import Human from './Human'
 import { START_FIGURES_COLOR } from '../global'
 
 class Player {
-  constructor(Type = Human, name, color) {
-    this.type = new Type(name, color)
+  constructor(Type, name, color, figures) {
+    this.type = new Type(name, color, figures)
     this.color = color
     this.name = name
+    this.figures = figures
     this.isCurrent = (color === START_FIGURES_COLOR ? true : false)
   }
 
