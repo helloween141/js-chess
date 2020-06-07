@@ -1,8 +1,18 @@
 class Move {
-    constructor(figure, from, to) {
+    constructor(figure, startPosPointer, endPosPointer) {
         this.figure = figure
-        this.from = from
-        this.to = to
+        this.startPosPointer = startPosPointer
+        this.endPosPointer = endPosPointer
+
+        this.moveVector = {
+            x: this.figure.getImage().attrs.x > this.endPosPixels.x ? -1 : 1,
+            y: this.figure.getImage().attrs.y > this.endPosPixels.y ? -1 : 1,
+        }       
+
+        this.endPosPixels = {
+            x: this.figure.toPixels(move.endX),
+            y: this.figure.toPixels(move.endY),
+        }       
     }
 
     updateMoveAnimation() {
@@ -22,10 +32,10 @@ class Move {
             imagePosX = (imagePosX < this.endPosPixels.x) ? imagePosX + ANIMATION_SPEED : this.endPosPixels.x
     
           if (imagePosX !== this.endPosPixels.x || imagePosY !== this.endPosPixels.y) {
-            this.setPositionPixels(imagePosX, imagePosY)
+            this.figure.setPositionPixels(imagePosX, imagePosY)
           } else {
-            this.setPositionPoint(this.endPosPointer.endX, this.endPosPointer.endY)
-            resolve(this) 
+            this.figure.setPositionPoint(this.endPosPointer.endX, this.endPosPointer.endY)
+            resolve(this.figure) 
           }
         }
     )}
