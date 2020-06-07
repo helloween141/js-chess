@@ -10,58 +10,34 @@ class King extends Figure {
     this.canCastling = true // Возможность рокировки
   }
 
-  getMoves(cells) {
+  getMoves(cells, excluded = []) {
+
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
-    let result = []
 
-    if (this.canMove(x, y + 1 * sign, cells)) {
-      result.push([x, y + 1 * sign])
-    }
+    let movesList = [
+      [x, y + 1 * sign],
+      [x, y - 1 * sign],
+      [x + 1 * sign, y],
+      [x + 1 * sign, y + 1 * sign],
+      [x - 1 * sign, y - 1 * sign],
+      [x + 1 * sign, y - 1 * sign],
+      [x - 1 * sign, y + 1 * sign],
+      [x - 1 * sign, y]
+    ]
 
-    if (this.canMove(x, y - 1 * sign, cells)) {
-      result.push([x, y - 1 * sign])
-    }
+    
+    return movesList.filter(move => this.canMove(move[0], move[1], cells, excluded))
 
-    if (this.canMove(x + 1 * sign, y, cells)) {
-      result.push([x + 1 * sign, y])
-    }
+    // if (this.canCastling) {
+    //   if (this.canMove(x - 2 * sign, y, cells, excluded)) {
+    //     result.push([x - 2 * sign, y])
+    //   }
 
-    if (this.canMove(x + 1 * sign, y + 1 * sign, cells)) {
-      result.push([x + 1 * sign, y + 1 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y - 1 * sign, cells)) {
-      result.push([x - 1 * sign, y - 1 * sign])
-    }
-
-    if (this.canMove(x + 1 * sign, y - 1 * sign, cells)) {
-      result.push([x + 1 * sign, y - 1 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y + 1 * sign, cells)) {
-      result.push([x - 1 * sign, y + 1 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y, cells)) {
-      result.push([x - 1 * sign, y])
-    }
-
-    if (this.canCastling && (this.canMove(x - 2 * sign, y, cells) || this.canMove(x + 2 * sign, y, cells))) {
-      result.push([x - 1 * sign, y])
-    }   
-
-    if (this.canCastling) {
-      if (this.canMove(x - 2 * sign, y, cells)) {
-        result.push([x - 2 * sign, y])
-      }
-
-      if (this.canMove(x + 2 * sign, y, cells)) {
-        result.push([x + 2 * sign, y])
-      }      
-    }   
-
-    return result
+    //   if (this.canMove(x + 2 * sign, y, cells, excluded)) {
+    //     result.push([x + 2 * sign, y])
+    //   }      
+    // }   
   }
 
   getCropPosition() {

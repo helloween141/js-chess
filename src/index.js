@@ -1,5 +1,3 @@
-import { STAGE_WIDTH, STAGE_HEIGHT } from './global'
-import Konva from 'konva'
 import './style.css'
 import Chess from './Chess'
 

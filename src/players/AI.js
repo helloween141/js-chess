@@ -1,8 +1,9 @@
-import { BOARD_CELLS_COUNT } from '../global'
+import Player from './Player'
 
-class AI {
+class AI extends Player {
   constructor(name, color, figures) {
-    this.selectedFigure = null
+    super(name, color, figures, false)
+    
     this.name = name
     this.color = color
     this.figures = figures
@@ -10,7 +11,6 @@ class AI {
 
   _getActions(cells) {
     const result = []
-    console.log(this.figures)
     this.figures.forEach(figure => {
       const moves = figure.getMoves(cells)
       if (moves.length > 0) {
@@ -20,26 +20,6 @@ class AI {
         })
       }
     })
-
-    // for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
-    //   for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
-    //     const figure = cells[j][i].figure
-        
-    //     if (figure && figure.color === this.color) {
-    //       /*
-    //             Всякие разные проверки (шах, возможность срубить и так далее)
-    //       */
-    //       const moves = figure.getMoves(cells)
-    //       if (moves.length > 0) {
-    //         result.push({
-    //           figure,
-    //           moves,
-    //         })
-    //       }
-    //     }
-    //   }
-    // }
-
     return result
   }
 

@@ -12,8 +12,8 @@ class Rook extends Figure {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
     let result = []
-
     let k = 1
+    
     while (this.canMove(x, y + k * sign, cells)) {
       result.push([x, y + k * sign])
 

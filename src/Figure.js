@@ -54,19 +54,26 @@ class Figure {
     })
   }
  
-  canMove(x, y, cells) {
+  canMove(x, y, cells, excluded = []) {
     if (x >= 0 && x < BOARD_CELLS_COUNT && y >= 0 && y < BOARD_CELLS_COUNT) {
+      if (excluded.length > 0) {
+        const isProhibitedMove = excluded.find(move => move[0] === x && move[1] === y)
+        if (isProhibitedMove) {
+          return false
+        } 
+      }  
+      
       if (this.name !== 'P') {
-        return cells[y][x].figure && cells[y][x].figure.color === this.color
-          ? false
-          : true
+        return cells[y][x].figure && cells[y][x].figure.color === this.color ? false : true
       } else {
         return true
       }
+
     }
     return false
   }
   
+  // TODO: setDestination
   prepareAnimation(move) {
     this.endPosPointer = move
     this.endPosPixels = {

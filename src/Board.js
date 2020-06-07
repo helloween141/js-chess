@@ -33,11 +33,11 @@ class Board {
       ['_R', '_N', '_B', '_Q', '_K', '_B', '_N', '_R'],
       ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
       ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', 'K', 'R', ''],
       ['', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', ''],
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+      ['R', 'N', 'B', 'Q', '', 'B', 'N', 'R']
     ]
 
     let oddColor, evenColor
@@ -83,7 +83,7 @@ class Board {
     return result
   }
 
-  selectSpot(posX, posY, playerColor) {
+  selectSpot(posX, posY, playerColor, opponentPlayer) {
     if (posX >= 0 && posX < BOARD_CELLS_COUNT && posY >= 0 && posY < BOARD_CELLS_COUNT) {
 
       for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
@@ -102,7 +102,10 @@ class Board {
       // Иначе подсветка возможных ходов
       else if (selectedSpot.figure && playerColor === selectedSpot.figure.color) {
         this.selectedFigure = selectedSpot.figure    
-        moves = selectedSpot.figure.getMoves(this.cells)
+        moves = selectedSpot.figure.name === 'K' 
+                ? selectedSpot.figure.getMoves(this.cells, opponentPlayer.getAttackMoves(this.cells))
+                : selectedSpot.figure.getMoves(this.cells)
+                
         moves.forEach(move => this.cells[move[1]][move[0]].highlight())  
       }
     }

@@ -11,25 +11,15 @@ class Knight extends Figure {
   getMoves(cells) {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
-    let result = []
 
-    if (this.canMove(x + 1 * sign, y + 2 * sign, cells)) {
-      result.push([x + 1 * sign, y + 2 * sign])
-    }
+    let movesList = [
+      [x + 1 * sign, y + 2 * sign],
+      [x - 1 * sign, y + 2 * sign],
+      [x + 1 * sign, y - 2 * sign],
+      [x - 1 * sign, y - 2 * sign]
+    ]   
 
-    if (this.canMove(x - 1 * sign, y + 2 * sign, cells)) {
-      result.push([x - 1 * sign, y + 2 * sign])
-    }
-
-    if (this.canMove(x + 1 * sign, y - 2 * sign, cells)) {
-      result.push([x + 1 * sign, y - 2 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y - 2 * sign, cells)) {
-      result.push([x - 1 * sign, y - 2 * sign])
-    }
-
-    return result
+    return movesList.filter(move => this.canMove(move[0], move[1], cells))
   }
 
   getCropPosition() {
