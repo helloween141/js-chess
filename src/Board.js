@@ -9,7 +9,7 @@ import {
   FIGURES_SPRITE_NAME
 } from './global'
 import Konva from 'konva'
-import Spot from './Spot'
+import Cell from './Cell'
 import FigureFactory from './figures/FigureFactory'
 
 class Board {
@@ -19,7 +19,6 @@ class Board {
     this.animLayer = new Konva.Layer()
     
     this.cells = new Array(BOARD_CELLS_COUNT).fill(null).map(() => new Array(BOARD_CELLS_COUNT).fill(null))
-    this.selectedFigure = null
 
     this.figuresSprite = new Image()
     this.figuresSprite.src = `./src/assets/${FIGURES_SPRITE_NAME}`
@@ -61,14 +60,13 @@ class Board {
             sprite: this.figuresSprite
           })
           figure.setPositionPoint(j, i)
-          this.cells[i][j] = new Spot(j, i, cellColor, figure)
+          this.cells[i][j] = new Cell(j, i, cellColor, figure)
         } else {
-          this.cells[i][j] = new Spot(j, i, cellColor, null)
+          this.cells[i][j] = new Cell(j, i, cellColor, null)
         }
       }
     }
   }
-
 
   getFiguresByColor(color) {
     const result = []
@@ -83,43 +81,32 @@ class Board {
     return result
   }
 
-  selectSpot(posX, posY, playerColor, opponentPlayer) {
+  // Выбрать ячейку
+  selectCell(posX, posY) {
     if (posX >= 0 && posX < BOARD_CELLS_COUNT && posY >= 0 && posY < BOARD_CELLS_COUNT) {
+      this.clearSelection()
+      return this.cells[posY][posX] 
+    } else {
+      return null
+    } 
+  }
 
-      for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
-        for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
-          this.cells[i][j].isSelected = false
-        }
-      }
-
-      const selectedSpot = this.cells[posY][posX]
-      let moves = []
-
-      // Если фигура была уже выбрана, либо есть возможность срубить
-      if (this.selectedFigure && (!selectedSpot.figure || selectedSpot.figure.color !== playerColor)) {
-        return this.selectedFigure
-      }
-      // Иначе подсветка возможных ходов
-      else if (selectedSpot.figure && playerColor === selectedSpot.figure.color) {
-        this.selectedFigure = selectedSpot.figure    
-        moves = selectedSpot.figure.name === 'K' 
-                ? selectedSpot.figure.getMoves(this.cells, opponentPlayer.getAttackMoves(this.cells))
-                : selectedSpot.figure.getMoves(this.cells)
-                
-        moves.forEach(move => this.cells[move[1]][move[0]].highlight())  
+  // Убрать подсветку
+  clearSelection() {
+    for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
+      for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
+        this.cells[i][j].isSelect = false
+        this.cells[i][j].isHighlight = false
       }
     }
-
-    return null
   }
-  
 
   updateMove(move) {
     return new Promise(resolve => {
       // Окончание анимации
-      this.selectedFigure.updateMoveAnimation().then(figure => {
+      move.runAnimation().then(figure => {
       // Если пешка дошла до противоположного конца, то она превращается в ферзя
-        if (figure.name === 'P' && (move.endY === 0 || move.endY === (BOARD_CELLS_COUNT - 1))) {
+        if (figure.name === 'P' && (move.endPosPointer.y === 0 || move.endPosPointer.y === (BOARD_CELLS_COUNT - 1))) {
           figure = FigureFactory.create({
             name: 'Q',
             color: figure.color,
@@ -130,11 +117,9 @@ class Board {
         if (figure.name === 'K') {
           this.canCastling = false
         }
-
-        this.cells[move.endY][move.endX].figure = figure
-        this.cells[move.startY][move.startX].figure = null
-
-        this.selectedFigure = null
+     
+        this.cells[move.endPosPointer.y][move.endPosPointer.x].figure = figure
+        this.cells[move.startPosPointer.y][move.startPosPointer.x].figure = null
 
         resolve(true)
       })
@@ -142,29 +127,28 @@ class Board {
   }
 
   _drawLabels(i) {
-    const half = Math.round(CELL_SIZE / 2)
-    const pos = i * CELL_SIZE
+    const middleOffset = Math.round(CELL_SIZE / 2) + (i * CELL_SIZE) + 20
 
-    let numerationLeftLabel = this._addLabel(
+    const numerationLeftLabel = this._addLabel(
       5,
-      20 + half + pos,
+      middleOffset,
       i + 1
     )
 
-    let numerationRightLabel = this._addLabel(
+    const numerationRightLabel = this._addLabel(
       STAGE_WIDTH - 20,
-      20 + half + pos,
+      middleOffset,
       BOARD_CELLS_COUNT - i
     )
 
-    let numerationTopLabel = this._addLabel(
-      20 + half + pos,
+    const numerationTopLabel = this._addLabel(
+      middleOffset,
       0,
       String.fromCharCode(97 + i)
     )
 
-    let numerationBottomLabel = this._addLabel(
-      20 + half + pos,
+    const numerationBottomLabel = this._addLabel(
+      middleOffset,
       STAGE_HEIGHT - 25,
       String.fromCharCode(97 + i)
     )
@@ -185,7 +169,7 @@ class Board {
       fontSize: 25,
       fontFamily: 'Calibri',
       fill: LABEL_COLOR,
-      rotation: rotation,
+      rotation: rotation
     })
   }
 
@@ -198,20 +182,15 @@ class Board {
       for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
         let cell = this.cells[i][j]
         if (cell) {
-          this.cellsLayer.add(cell.getCellShape())
+          this.cellsLayer.add(cell.getShape())
   
           if (cell.figure) {
-            this.figuresLayer.add(cell.getFigureShape())
+            this.figuresLayer.add(cell.getFigure().getShape())
           }
         }
       }
       this._drawLabels(i)
     }
-
-    if (this.animationFigure) {
-      this.animLayer.add(this.selectedFigure.image)
-    }
-    
   }
 }
 

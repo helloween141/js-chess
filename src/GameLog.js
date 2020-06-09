@@ -4,7 +4,9 @@ class GameLog {
     }
 
     addMoveInfo(color, move) {
-        this.$el.value += `Ход ${color}: с ${move.startX}:${move.startY} на ${move.endX}:${move.endY} \n\r`
+        const positionInfo = move.getInfo()
+
+        this.$el.value += `Ход ${color} ${move.figure.name}: ${positionInfo.startX}${positionInfo.startY} - ${positionInfo.endX}${positionInfo.endY} \n\r`
         this.$el.scrollTop = this.$el.scrollHeight
     }
 

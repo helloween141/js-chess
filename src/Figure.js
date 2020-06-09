@@ -1,4 +1,4 @@
-import { BOARD_CELLS_COUNT, ANIMATION_SPEED, CELL_SIZE } from './global'
+import { BOARD_CELLS_COUNT, CELL_SIZE } from './global'
 
 class Figure {
 
@@ -22,18 +22,17 @@ class Figure {
       imagePosY: this.image.attrs.y
     }
   }
-  
-  
+
   setPositionPixels(x, y) {
-    this.getImage().position({x, y})
+    this.image.position({x, y})
   }
   
-  getImage() {
+  getShape() {
     return this.image
   }
 
   toPixels(val) {
-    return CELL_SIZE / 2 + val * CELL_SIZE - 2
+    return (CELL_SIZE / 2) + (val * CELL_SIZE) - 2
   }
 
   createImage(sprite) {
@@ -72,46 +71,6 @@ class Figure {
     }
     return false
   }
-  
-  // TODO: setDestination
-  prepareAnimation(move) {
-    this.endPosPointer = move
-    this.endPosPixels = {
-      x: this.toPixels(move.endX),
-      y: this.toPixels(move.endY)
-    }
-  
-    this.moveVector = {
-      x: this.getImage().attrs.x > this.endPosPixels.x ? -1 : 1,
-      y: this.getImage().attrs.y > this.endPosPixels.y ? -1 : 1
-    }
-  }
-
-  updateMoveAnimation() {
-    return new Promise(resolve => {
-      let { imagePosX, imagePosY } = this.getPositionPixels()
-
-      // Движение по OY
-      if (this.moveVector.y < 0)
-        imagePosY = (imagePosY > this.endPosPixels.y) ? imagePosY - ANIMATION_SPEED : this.endPosPixels.y 
-      else
-        imagePosY = (imagePosY < this.endPosPixels.y) ? imagePosY + ANIMATION_SPEED : this.endPosPixels.y
-
-      // Движение по OX
-      if (this.moveVector.x < 0)
-        imagePosX = (imagePosX > this.endPosPixels.x) ? imagePosX - ANIMATION_SPEED : this.endPosPixels.x
-      else
-        imagePosX = (imagePosX < this.endPosPixels.x) ? imagePosX + ANIMATION_SPEED : this.endPosPixels.x
-
-      if (imagePosX !== this.endPosPixels.x || imagePosY !== this.endPosPixels.y) {
-        this.setPositionPixels(imagePosX, imagePosY)
-      } else {
-        this.setPositionPoint(this.endPosPointer.endX, this.endPosPointer.endY)
-        resolve(this) 
-      }
-    }
-  )}
-  
 }
 
 export default Figure

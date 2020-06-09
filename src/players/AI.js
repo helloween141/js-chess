@@ -7,6 +7,7 @@ class AI extends Player {
     this.name = name
     this.color = color
     this.figures = figures
+    this.selectedFigure = null
   }
 
   _getActions(cells) {
@@ -31,14 +32,19 @@ class AI extends Player {
 
       const figure = possibleActions[actionId].figure
       const moveTo = possibleActions[actionId].moves[Math.floor(possibleActions[actionId].moves.length * Math.random())] 
+      
+      this.selectedFigure = figure
 
       return {
-        startX: figure.getPositionPoint().x,
-        startY: figure.getPositionPoint().y,
-        endX: moveTo[0],
-        endY: moveTo[1]
+        startPosPointer: {
+          x: figure.getPositionPoint().x,
+          y: figure.getPositionPoint().y
+        },
+        endPosPointer: {
+          x: moveTo[0],
+          y: moveTo[1]
+        }
       }
-
     } else {
       return null
     }

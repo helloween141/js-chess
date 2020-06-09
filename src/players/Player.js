@@ -6,6 +6,7 @@ class Player {
     this.color = color
     this.name = name
     this.figures = figures
+    
     this.isCurrent = (color === START_FIGURES_COLOR ? true : false)
   }
 
@@ -16,8 +17,9 @@ class Player {
     let result = []
     this.figures.forEach(figure => {
       const moves = (figure.name === 'P') ? figure.getMoves(cells, [], true) : figure.getMoves(cells)
+
       if (moves.length > 0) {
-        result = result.concat(moves)
+        result = [...result, ...moves] /*result.concat(moves)*/
       }
     })
     return result

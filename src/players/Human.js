@@ -7,22 +7,23 @@ class Human extends Player {
     this.name = name
     this.color = color
     this.figures = figures
+    this.selectedFigure = null
   }
 
-  getMove(cells, figure, clickX, clickY, opponentPlayer) {
+  getMove(cells, clickX, clickY, opponentPlayer) {
     let excludedMoves = []
-    if (figure.name === 'K') {
+    if (this.selectedFigure.name === 'K') {
       excludedMoves = opponentPlayer.getAttackMoves(cells)
     }
 
-    const canMove = (figure.getMoves(cells, excludedMoves)).find(move => move[0] === clickX && move[1] === clickY)
-    
+    const canMove = (this.selectedFigure.getMoves(cells, excludedMoves)).find(move => move[0] === clickX && move[1] === clickY)
     if (canMove) {
       return {
-        startX: figure.getPositionPoint().x,
-        startY: figure.getPositionPoint().y,
-        endX: clickX,
-        endY: clickY
+        startPosPointer: this.selectedFigure.getPositionPoint(),
+        endPosPointer: {
+          x: clickX,
+          y: clickY
+        }
       }
     } else {
       return null
