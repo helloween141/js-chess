@@ -43,7 +43,7 @@ class Chess {
           const selectedCell = this.board.selectCell(cellX, cellY)
 
           // Ход
-          if (humanMoves.length > 0) {
+          if (humanMoves.length > 0 && (!selectedCell.getFigure() || selectedCell.getFigure().color !== this.currentPlayer.color)) {
             const movePos = this.currentPlayer.getMove(humanMoves, cellX, cellY)
             this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
             humanMoves = []

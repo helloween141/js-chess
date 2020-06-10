@@ -85,7 +85,6 @@ class Board {
   selectCell(posX, posY) {
     if (posX >= 0 && posX < BOARD_CELLS_COUNT && posY >= 0 && posY < BOARD_CELLS_COUNT) {
       this.clearSelection()
-      this.cells[posY][posX].setSelect()
       return this.cells[posY][posX] 
     } else {
       return null
