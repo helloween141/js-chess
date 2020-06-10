@@ -19,7 +19,7 @@ class Player {
       const moves = (figure.name === 'P') ? figure.getMoves(cells, [], true) : figure.getMoves(cells)
 
       if (moves.length > 0) {
-        result = [...result, ...moves] /*result.concat(moves)*/
+        result = [...result, ...moves]
       }
     })
     return result

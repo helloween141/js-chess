@@ -32,9 +32,8 @@ class Chess {
 
     // Если есть живой игрок, то создаем listener для stage
     if (this.playerOne.isHuman || this.playerTwo.isHuman) {
-
+      let humanMoves = []
       this.stage.on('click', (e) => {    
-        let possiblyMoves = []
         if (!this.isUpdating) {
           const mousePosition = this.stage.getPointerPosition()
       
@@ -44,24 +43,25 @@ class Chess {
           const selectedCell = this.board.selectCell(cellX, cellY)
 
           // Ход
-          if (this.currentPlayer.selectedFigure && (!selectedCell.getFigure() || selectedCell.getFigure().color !== this.currentPlayer.color)) {
-            const movePos = this.currentPlayer.getMove(this.board.cells, cellX, cellY, this.playerOne.isCurrent ? this.playerTwo : this.playerOne)
-
+          if (humanMoves.length > 0) {
+            const movePos = this.currentPlayer.getMove(humanMoves, cellX, cellY)
             this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
+            humanMoves = []
           }
           // Подсветка возможных ходов
           else if (selectedCell.getFigure() && selectedCell.getFigure().color === this.currentPlayer.color) {
             selectedCell.setSelect()    
             this.currentPlayer.selectedFigure = selectedCell.getFigure()    
 
-            // TODO: opponentPlayer
-            possiblyMoves = (selectedCell.getFigure().name === 'K')
-                          ? selectedCell.getFigure().getMoves(this.board.cells, opponentPlayer.getAttackMoves(this.board.cells))
-                          : selectedCell.getFigure().getMoves(this.board.cells)
-            possiblyMoves.forEach(move => this.board.cells[move[1]][move[0]].setHighlight())  
+            humanMoves = (selectedCell.getFigure().name === 'K')
+                       ? selectedCell.getFigure().getMoves(this.board.cells, this._getOpponent().getAttackMoves(this.board.cells))
+                       : selectedCell.getFigure().getMoves(this.board.cells)
+                       
+            humanMoves.forEach(move => this.board.cells[move[1]][move[0]].setHighlight())  
           }
           this.render()
         }
+      
       }) 
     }
 
@@ -128,6 +128,10 @@ class Chess {
       })(); 
 
     })
+  }
+
+  _getOpponent() {
+    return this.playerOne.isCurrent ? this.playerTwo : this.playerOne
   }
 
   _rollColor() {
