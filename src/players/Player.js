@@ -8,6 +8,7 @@ class Player {
     this.figures = figures
     
     this.isCurrent = (color === START_FIGURES_COLOR ? true : false)
+    this.isShach = false
   }
 
   /*
@@ -23,6 +24,23 @@ class Player {
       }
     })
     return result
+  }
+
+  getKingFigure() {
+    return this.figures.find(figure => figure.name === 'K' || figure.name === '_K')
+  }
+
+  checkShach(opponentMoves) {
+    const kingFigure = this.getKingFigure()
+    console.log('Opponent Moves for snapshot')
+    console.log(opponentMoves)
+    console.log(`King pos: ${kingFigure.getPositionPoint().x}, ${kingFigure.getPositionPoint().y}`)
+    // Но если есть возможность срубить фигуру, то пропускаем 
+    opponentMoves.find(move => kingFigure.getPositionPoint().y === move[0] && kingFigure.getPositionPoint().x === move[1]) 
+    ? this.isShach = true  
+    : this.isShach = false
+
+    return this.isShach
   }
 
 }

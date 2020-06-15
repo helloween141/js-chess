@@ -12,6 +12,12 @@ class AI extends Player {
 
   _getActions(cells) {
     const result = []
+    const figures = this.figures
+
+    if (this.checkShach()) {
+      figures = this.getKingFigure()
+    }
+
     this.figures.forEach(figure => {
       const moves = figure.getMoves(cells)
       if (moves.length > 0) {

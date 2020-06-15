@@ -8,13 +8,19 @@ class Pawn extends Figure {
     this.image = this.createImage(sprite)
   }
 
-  getMoves(cells, excluded = [], checkAttack = false) {
+  /*
+    Получить все возможные ходы у пешки
+    @cells: ячейки
+    @excluded: ходы противника
+    @movesOnly: флаг для получения только мест атаки (необходимо для проверки на шах)
+  */
+  getMoves(cells, excluded = [], movesOnly = false) {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
     let result = []
     
     // Движение
-    if (!checkAttack) {
+    if (!movesOnly) {
       if (this.canMove(x, y + 1 * sign, cells) && !cells[y + 1 * sign][x].figure) {
         result.push([x, y + 1 * sign])
         
@@ -24,21 +30,20 @@ class Pawn extends Figure {
       }
     }
 
-
-    // Рубка по правой диагонали
+    // Атака по правой диагонали
     if (
       (this.canMove(x + 1 * sign, y + 1 * sign, cells) &&
       cells[y + 1 * sign][x + 1 * sign].figure &&
-      cells[y + 1 * sign][x + 1 * sign].figure.color !== this.color) || checkAttack
+      cells[y + 1 * sign][x + 1 * sign].figure.color !== this.color) || movesOnly
     ) {
       result.push([x + 1 * sign, y + 1 * sign])
     }
 
-    // Рубка по левой диагонали
+    // Атака по левой диагонали
     if (
       (this.canMove(x - 1 * sign, y + 1 * sign, cells) &&
       cells[y + 1 * sign][x - 1 * sign].figure &&
-      cells[y + 1 * sign][x - 1 * sign].figure.color !== this.color) || checkAttack
+      cells[y + 1 * sign][x - 1 * sign].figure.color !== this.color) || movesOnly
     ) {
       result.push([x - 1 * sign, y + 1 * sign])
     }

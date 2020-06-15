@@ -8,7 +8,7 @@ class Queen extends Figure {
     this.image = this.createImage(sprite)
   }
 
-  getMoves(cells) {
+  getMoves(cells, excluded = []) {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
     let result = []

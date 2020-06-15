@@ -29,11 +29,11 @@ class Board {
 
   initialize() {
     const defaultGameField = [
-      ['_R', '_N', '_B', '_Q', '_K', '_B', '_N', '_R'],
+      ['_R', '_N', '_B', '', '_K', '_B', '', '_R'],
       ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', 'K', 'R', ''],
-      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '_Q', '', ''],
+      ['', '', '', '_N', '', 'R', '', ''],
+      ['', '', '', '', '', 'K', '', ''],
       ['', '', '', '', '', '', '', ''],
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
       ['R', 'N', 'B', 'Q', '', 'B', 'N', 'R']
@@ -112,6 +112,7 @@ class Board {
             color: figure.color,
             sprite: this.figuresSprite
           })
+          figure.setPositionPoint(move.endPosPointer.x, move.endPosPointer.y)
         }
             
         if (figure.name === 'K') {

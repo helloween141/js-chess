@@ -26,8 +26,8 @@ class King extends Figure {
       [x - 1 * sign, y]
     ]
 
-    
     return movesList.filter(move => this.canMove(move[0], move[1], cells, excluded))
+    // return movesList.filter(move => this.canMove(move[0], move[1], cells, excluded))
 
     // if (this.canCastling) {
     //   if (this.canMove(x - 2 * sign, y, cells, excluded)) {
