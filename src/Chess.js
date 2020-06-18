@@ -45,41 +45,45 @@ class Chess {
           // Ход
           if (humanMoves.length > 0 && (!selectedCell.getFigure() || selectedCell.getFigure().color !== this.currentPlayer.color)) {
             const movePos = this.currentPlayer.getMove(humanMoves, cellX, cellY)
-            
             this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
             humanMoves = []
           }
           // Подсветка возможных ходов
           else if (selectedCell.getFigure() && selectedCell.getFigure().color === this.currentPlayer.color) {
+
             selectedCell.setSelect()    
+
             this.currentPlayer.selectedFigure = selectedCell.getFigure()    
 
-            humanMoves = (selectedCell.getFigure().name === 'K')
-                       ? selectedCell.getFigure().getMoves(this.board.cells, this.getOpponentPlayer().getAttackMoves(this.board.cells))
-                       : selectedCell.getFigure().getMoves(this.board.cells)
+            const isKingFigure = selectedCell.getFigure().name === 'K' ? true : false
 
-            
+            let cellsSnapshot = this.board.getSnapshot()
 
-            //humanMoves = selectedCell.getFigure().getMoves(this.board.cells)    
+            humanMoves = selectedCell.getFigure().getMoves(cellsSnapshot)   
+
             humanMoves.forEach(move => {
-              // Тут нужен null
-              let cellsSnapshot = JSON.parse(JSON.stringify(this.board.cells));
-
-              [cellsSnapshot[cellY][cellX], cellsSnapshot[move[1]][move[0]]] = [cellsSnapshot[move[1]][move[0]], cellsSnapshot[cellY][cellX]]
-              cellsSnapshot[cellY][cellX].figure = null
-                
 
               console.log(`Potential move: ${move}`)
-              if (cellsSnapshot) {
-                let opponentMoves = this.currentPlayer.getAttackMoves(cellsSnapshot)
-                // Исключить из opponentMoves текущий ход
-                if (!this.currentPlayer.checkShach(opponentMoves)) {
-                  this.board.cells[move[1]][move[0]].setHighlight() 
+              cellsSnapshot = this.board.getSnapshot() 
+              cellsSnapshot[move[1]][move[0]] = selectedCell.getFigure().name
+              cellsSnapshot[cellY][cellX] = ''
+              console.log(`Potential snapshot`)
+              console.log(cellsSnapshot)
+              let opponentMoves = this.opponentPlayer.getAttackMoves(cellsSnapshot)
+             
+              let potentialKingPosition = null
+              if (isKingFigure) {
+                potentialKingPosition = {
+                  x: move[0],
+                  y: move[1]
                 }
-                //[cellsSnapshot[move[1]][move[0]], cellsSnapshot[cellY][cellX]] = [cellsSnapshot[cellY][cellX], cellsSnapshot[move[1]][move[0]]]
               }
-              
-              
+
+              // Исключить из opponentMoves текущий ход
+              if (!this.currentPlayer.checkShach(opponentMoves, potentialKingPosition)) {
+                  this.board.cells[move[1]][move[0]].setHighlight() 
+              }
+
             }) 
             
             this.render()
@@ -87,6 +91,7 @@ class Chess {
         }
       }) 
     }
+    
     this.gameLoop()
 
     this.render()
@@ -130,14 +135,46 @@ class Chess {
 
   // Проверка на шах и мат
   checkGameState() {
-    const opponentMoves = this.getOpponentPlayer().getAttackMoves(this.board.cells)
+
+    const opponentMoves = this.opponentPlayer.getAttackMoves(this.board.getSnapshot())
 
     if (this.currentPlayer.checkShach(opponentMoves)) {
-      this.gameLog.addCustomInfo(`${this.currentPlayer.color} королю ставят шах`)
+      this.gameLog.addCustomInfo(`${this.opponentPlayer.color} ставят шах`)
 
-      // Если ходов у короля нет, то игра окончена
-    } else {
+      let checkmate = true 
 
+      this.currentPlayer.figures.forEach(figure => {
+
+        const isKingFigure = figure.name === 'K' ? true : false
+      
+        const moves = figure.getMoves(this.board.getSnapshot())   
+
+        moves.forEach(move => {
+
+          let cellsSnapshot = this.board.getSnapshot() 
+          cellsSnapshot[move[1]][move[0]] = figure.name
+          cellsSnapshot[figure.getPositionPoint().y][figure.getPositionPoint().x] = ''
+
+          let opponentMoves = this.opponentPlayer.getAttackMoves(cellsSnapshot)
+        
+          let potentialKingPosition = null
+          if (isKingFigure) {
+            potentialKingPosition = {
+              x: move[0],
+              y: move[1]
+            }
+          }
+
+          if (!this.currentPlayer.checkShach(opponentMoves, potentialKingPosition)) {
+            checkmate = false
+            // Добавляем возможные ходы в массив
+          }
+        }) 
+      })
+
+      if (checkmate) {
+        this.gameLog.addCustomInfo(`${this.opponentPlayer.color} ставят мат`)
+      }
     }
 
   }
@@ -165,7 +202,7 @@ class Chess {
     })
   }
 
-  getOpponentPlayer() {
+  get opponentPlayer() {
     return this.playerOne.isCurrent ? this.playerTwo : this.playerOne
   }
 

@@ -9,6 +9,7 @@ class Player {
     
     this.isCurrent = (color === START_FIGURES_COLOR ? true : false)
     this.isShach = false
+    
   }
 
   /*
@@ -16,30 +17,37 @@ class Player {
   */
   getAttackMoves(cells) {
     let result = []
-    this.figures.forEach(figure => {
-      const moves = (figure.name === 'P') ? figure.getMoves(cells, [], true) : figure.getMoves(cells)
+    this.figures.forEach(figure => {  
+      let figureName = (figure.color === 'black') ? '_' + figure.name : figure.name
 
-      if (moves.length > 0) {
-        result = [...result, ...moves]
+      if (cells[figure.getPositionPoint().y][figure.getPositionPoint().x] === figureName) {
+        const moves = (figure.name === 'P') ? figure.getMoves(cells, [], true) : figure.getMoves(cells)
+
+        if (moves.length > 0) {
+          result = [...result, ...moves]
+        }
       }
+
     })
     return result
   }
 
-  getKingFigure() {
-    return this.figures.find(figure => figure.name === 'K' || figure.name === '_K')
+  getKingPosition() {
+    return this.figures.find(figure => figure.name === 'K').getPositionPoint()
   }
 
-  checkShach(opponentMoves) {
-    const kingFigure = this.getKingFigure()
+  checkShach(opponentMoves, potentialKingPosition = null) {
+    const kingPosition = potentialKingPosition ? potentialKingPosition : this.getKingPosition()
+
     console.log('Opponent Moves for snapshot')
     console.log(opponentMoves)
-    console.log(`King pos: ${kingFigure.getPositionPoint().x}, ${kingFigure.getPositionPoint().y}`)
+    console.log(kingPosition)
     // Но если есть возможность срубить фигуру, то пропускаем 
-    opponentMoves.find(move => kingFigure.getPositionPoint().y === move[0] && kingFigure.getPositionPoint().x === move[1]) 
+    console.log(opponentMoves.find(move => kingPosition.y === move[0] && kingPosition.x === move[1]) )
+    opponentMoves.find(move => kingPosition.x === move[0] && kingPosition.y === move[1]) 
     ? this.isShach = true  
     : this.isShach = false
-
+    console.log(this.isShach)
     return this.isShach
   }
 

@@ -29,12 +29,12 @@ class Board {
 
   initialize() {
     const defaultGameField = [
-      ['_R', '_N', '_B', '', '_K', '_B', '', '_R'],
+      ['_R', '_N', '_B', '', '_K', '_B', '_N', ''],
       ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
-      ['', '', '', '', '', '_Q', '', ''],
-      ['', '', '', '_N', '', 'R', '', ''],
-      ['', '', '', '', '', 'K', '', ''],
-      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '_Q', '_P', ''],
+      ['', '', '', '', '', '', '_P', 'K'],
+      ['', '', '', '', '', '', '_P', ''],
+      ['', '', '', '', '', '', '_Q', '_R'],
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
       ['R', 'N', 'B', 'Q', '', 'B', 'N', 'R']
     ]
@@ -66,6 +66,7 @@ class Board {
         }
       }
     }
+
   }
 
   getFiguresByColor(color) {
@@ -89,6 +90,18 @@ class Board {
     } else {
       return null
     } 
+  }
+
+  getSnapshot() {
+    let snapshot = []
+    for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
+      snapshot.push([])
+      for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
+        const figure = this.cells[i][j].getFigure()
+        snapshot[i].push(figure ? (figure.color === 'black' ? '_' : '') + figure.name : '')
+      }
+    }  
+    return snapshot
   }
 
   // Убрать подсветку

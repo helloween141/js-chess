@@ -1,7 +1,6 @@
 import { BOARD_CELLS_COUNT, CELL_SIZE } from './global'
 
 class Figure {
-
   getPositionPoint() {
     return {
       x: this.x,
@@ -35,6 +34,14 @@ class Figure {
     return (CELL_SIZE / 2) + (val * CELL_SIZE) - 2
   }
 
+  getFigureSnapshotColor(figure) {
+    if (figure) {
+      return figure[0] === '_' ? 'black' : 'white'
+    } else {
+      return null
+    }
+  }
+
   createImage(sprite) {
     const width = sprite.width / 6
     const height = sprite.height / 2
@@ -62,9 +69,9 @@ class Figure {
           return false
         } 
       }
-      
+
       if (this.name !== 'P') {
-        return cells[y][x].figure && cells[y][x].figure.color === this.color ? false : true
+        return this.getFigureSnapshotColor(cells[y][x]) === this.color ? false : true
       } else {
         return true
       }

@@ -21,33 +21,27 @@ class Pawn extends Figure {
     
     // Движение
     if (!movesOnly) {
-      if (this.canMove(x, y + 1 * sign, cells) && !cells[y + 1 * sign][x].figure) {
+      if (this.canMove(x, y + 1 * sign, cells) && !cells[y + 1 * sign][x]) {
         result.push([x, y + 1 * sign])
         
-        if ((y === 1 || y === 6) && this.canMove(x, y + 2 * sign, cells) && !cells[y + 2 * sign][x].figure) {
+        if ((y === 1 || y === 6) && this.canMove(x, y + 2 * sign, cells) && !cells[y + 2 * sign][x]) {
           result.push([x, y + 2 * sign])
         }
       }
     }
-
+    
     // Атака по правой диагонали
-    if (
-      (this.canMove(x + 1 * sign, y + 1 * sign, cells) &&
-      cells[y + 1 * sign][x + 1 * sign].figure &&
-      cells[y + 1 * sign][x + 1 * sign].figure.color !== this.color) || movesOnly
-    ) {
+    if ((this.canMove(x + 1 * sign, y + 1 * sign, cells) && cells[y + 1 * sign][x + 1 * sign] && 
+        this.getFigureSnapshotColor(cells[y + 1 * sign][x + 1 * sign]) !== this.color) || movesOnly) {
       result.push([x + 1 * sign, y + 1 * sign])
     }
 
     // Атака по левой диагонали
-    if (
-      (this.canMove(x - 1 * sign, y + 1 * sign, cells) &&
-      cells[y + 1 * sign][x - 1 * sign].figure &&
-      cells[y + 1 * sign][x - 1 * sign].figure.color !== this.color) || movesOnly
-    ) {
+    if ((this.canMove(x - 1 * sign, y + 1 * sign, cells) && cells[y + 1 * sign][x - 1 * sign] &&
+        this.getFigureSnapshotColor(cells[y + 1 * sign][x - 1 * sign]) !== this.color) || movesOnly) {
       result.push([x - 1 * sign, y + 1 * sign])
     }
-
+   
     return result
   }
 
