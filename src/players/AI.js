@@ -10,16 +10,12 @@ class AI extends Player {
     this.selectedFigure = null
   }
 
-  _getActions(cells) {
+  _getActions(cells, opponentPlayer) {
     const result = []
-    const figures = this.figures
-
-    if (this.checkShach()) {
-      figures = this.getKingFigure()
-    }
 
     this.figures.forEach(figure => {
-      const moves = figure.getMoves(cells)
+      const moves = this.getAllPossibleMoves(figure, opponentPlayer, cells)
+
       if (moves.length > 0) {
         result.push({
           figure,
@@ -30,9 +26,9 @@ class AI extends Player {
     return result
   }
 
-  getMove(cells) {
-    const possibleActions = this._getActions(cells)
-
+  getMove(cells, opponentPlayer) {
+    const possibleActions = this._getActions(cells, opponentPlayer)
+    
     if (possibleActions.length > 0) {
       const actionId = Math.floor(possibleActions.length * Math.random())
 

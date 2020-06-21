@@ -7,11 +7,10 @@ class Human extends Player {
     this.name = name
     this.color = color
     this.figures = figures
-    this.selectedFigure = null
   }
 
   
-  getMove(moves, clickX, clickY) {
+  getMovePosition(moves, clickX, clickY) {
     const canMove = moves.find(move => move[0] === clickX && move[1] === clickY)
     if (canMove) {
       return {

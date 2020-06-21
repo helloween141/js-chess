@@ -14,7 +14,12 @@ class Chess {
     this.isUpdating = false
   }
 
-  startGame(PlayerTypeOne = Human, PlayerTypeTwo = Human) {
+  /*
+    Начать игру
+    @PlayerTypeOne - тип игрока №1
+    @PlayerTypeTwo - тип игрока №2
+  */
+  startGame(PlayerTypeOne = AI, PlayerTypeTwo = AI) {
     // Сборка мусора, если игра уже была создана
     if (this.board) {
       this._destroy()
@@ -22,7 +27,7 @@ class Chess {
 
     // Инициализация игрового поля
     this.board.initialize()
-    
+
     // Создание игроков
     const colors = this.rollColor()
     this.playerOne = new PlayerTypeOne('Игрок 1', colors.colorOne, this.board.getFiguresByColor(colors.colorOne))
@@ -43,60 +48,39 @@ class Chess {
           const selectedCell = this.board.selectCell(cellX, cellY)
 
           // Ход
-          if (humanMoves.length > 0 && (!selectedCell.getFigure() || selectedCell.getFigure().color !== this.currentPlayer.color)) {
-            const movePos = this.currentPlayer.getMove(humanMoves, cellX, cellY)
+          if (humanMoves.length > 0 && humanMoves.find(m => m[1] === cellY && m[0] === cellX)) {
+            const movePos = this.currentPlayer.getMovePosition(humanMoves, cellX, cellY)
+
             this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
+
             humanMoves = []
           }
           // Подсветка возможных ходов
           else if (selectedCell.getFigure() && selectedCell.getFigure().color === this.currentPlayer.color) {
 
             selectedCell.setSelect()    
-
-            this.currentPlayer.selectedFigure = selectedCell.getFigure()    
-
-            const isKingFigure = selectedCell.getFigure().name === 'K' ? true : false
-
-            let cellsSnapshot = this.board.getSnapshot()
-
-            humanMoves = selectedCell.getFigure().getMoves(cellsSnapshot)   
-
-            humanMoves.forEach(move => {
-
-              console.log(`Potential move: ${move}`)
-              cellsSnapshot = this.board.getSnapshot() 
-              cellsSnapshot[move[1]][move[0]] = selectedCell.getFigure().name
-              cellsSnapshot[cellY][cellX] = ''
-              console.log(`Potential snapshot`)
-              console.log(cellsSnapshot)
-              let opponentMoves = this.opponentPlayer.getAttackMoves(cellsSnapshot)
-             
-              let potentialKingPosition = null
-              if (isKingFigure) {
-                potentialKingPosition = {
-                  x: move[0],
-                  y: move[1]
-                }
-              }
-
-              // Исключить из opponentMoves текущий ход
-              if (!this.currentPlayer.checkShach(opponentMoves, potentialKingPosition)) {
-                  this.board.cells[move[1]][move[0]].setHighlight() 
-              }
-
-            }) 
             
+            this.currentPlayer.selectedFigure = selectedCell.getFigure()
+
+            humanMoves = this.currentPlayer.getAllPossibleMoves(selectedCell.getFigure(), this.getOpponentPlayer(), this.board.getSnapshot())
+            
+            humanMoves.forEach(move => this.board.cells[move[1]][move[0]].setHighlight())
+
             this.render()
           }
         }
       }) 
     }
-    
+
     this.gameLoop()
 
     this.render()
   }
- 
+
+  /*
+    Игровой цикл
+    @move - текущий ход
+  */
   gameLoop(move = null) {
     if (move) {
       this.isUpdating = true
@@ -120,65 +104,48 @@ class Chess {
           this.currentPlayer = this.playerOne
         }
 
-        this.checkGameState()
-
-        this.gameLoop()
+        if (!this.checkCheckmate()) {
+          this.gameLoop()
+        }
+        
       })
     } else {
       // Вызов хода AI, если он существует
       if (!this.currentPlayer.isHuman) {
-          const movePos = this.currentPlayer.getMove(this.board.cells)
+          const movePos = this.currentPlayer.getMove(this.board.getSnapshot(), this.getOpponentPlayer())
           this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
       }
     }
   }
 
-  // Проверка на шах и мат
-  checkGameState() {
-
-    const opponentMoves = this.opponentPlayer.getAttackMoves(this.board.getSnapshot())
+  /*
+   Проверка на шах и мат
+  */
+  checkCheckmate() {
+    const opponentMoves = this.getOpponentPlayer().getAttackMoves(this.board.getSnapshot())
 
     if (this.currentPlayer.checkShach(opponentMoves)) {
-      this.gameLog.addCustomInfo(`${this.opponentPlayer.color} ставят шах`)
+      this.gameLog.addCustomInfo(`${this.getOpponentPlayer().color} ставят шах`)
 
-      let checkmate = true 
-
+      let checkmateFlag = true
       this.currentPlayer.figures.forEach(figure => {
-
-        const isKingFigure = figure.name === 'K' ? true : false
-      
-        const moves = figure.getMoves(this.board.getSnapshot())   
-
-        moves.forEach(move => {
-
-          let cellsSnapshot = this.board.getSnapshot() 
-          cellsSnapshot[move[1]][move[0]] = figure.name
-          cellsSnapshot[figure.getPositionPoint().y][figure.getPositionPoint().x] = ''
-
-          let opponentMoves = this.opponentPlayer.getAttackMoves(cellsSnapshot)
-        
-          let potentialKingPosition = null
-          if (isKingFigure) {
-            potentialKingPosition = {
-              x: move[0],
-              y: move[1]
-            }
-          }
-
-          if (!this.currentPlayer.checkShach(opponentMoves, potentialKingPosition)) {
-            checkmate = false
-            // Добавляем возможные ходы в массив
-          }
-        }) 
+        const currentPlayerMoves = this.currentPlayer.getAllPossibleMoves(figure, this.getOpponentPlayer(), this.board.getSnapshot())
+        if (currentPlayerMoves.length > 0) {
+          checkmateFlag = false
+        }
       })
-
-      if (checkmate) {
-        this.gameLog.addCustomInfo(`${this.opponentPlayer.color} ставят мат`)
+ 
+      if (checkmateFlag) {
+        this.gameLog.addCustomInfo(`Партия окончена. ${this.getOpponentPlayer().color} ставят мат`)
+        return true
       }
     }
-
+    return false
   }
 
+  /*
+    Глобальный апдейт
+  */
   update(move) {
     return new Promise(resolve => {
       const self = this
@@ -202,10 +169,16 @@ class Chess {
     })
   }
 
-  get opponentPlayer() {
+  /*
+    Получить вражеского игрока
+  */
+  getOpponentPlayer() {
     return this.playerOne.isCurrent ? this.playerTwo : this.playerOne
   }
 
+  /*
+    Задать цвета игрокам
+  */
   rollColor() {
     if (Math.round(Math.random())) {
       return {
@@ -220,12 +193,19 @@ class Chess {
     }
   }
 
+  /*
+    Сборка мусора
+  */
   _destroy() {
     this.stage.destroyChildren()
     this.gameLog.clear()
     window.cancelAnimationFrame(this.loop)    
   }
 
+  
+  /*
+    Отрисовка
+  */
   render() {
     if (this.board) {
       this.board.render()

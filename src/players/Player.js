@@ -6,19 +6,57 @@ class Player {
     this.color = color
     this.name = name
     this.figures = figures
-    
+
     this.isCurrent = (color === START_FIGURES_COLOR ? true : false)
-    this.isShach = false
-    
+    this.selectedFigure = null
   }
 
   /*
-    Возвращает все возможные ходы игрока, по которым он может атаковать
+    Получить все возможные ходы игрока для выбранной фигуры
+    @opponentPlayer - вражеский игрок
+    @cellsSnapshot - слепок игрового поля
+  */
+  getAllPossibleMoves(selectedFigure, opponentPlayer, cellsSnapshot) {
+    if (selectedFigure) {
+      const possibleMoves = []
+      const playerMoves = selectedFigure.getMoves(cellsSnapshot)   
+  
+      playerMoves.forEach(move => {
+        let tmpSnapshot = JSON.parse(JSON.stringify(cellsSnapshot))
+  
+        //console.log(`Potential move: ${move}`)
+        tmpSnapshot[move[1]][move[0]] = selectedFigure.name
+        tmpSnapshot[selectedFigure.getPositionPoint().y][selectedFigure.getPositionPoint().x] = ''
+        //console.log(`Potential snapshot`)
+        //console.log(tmpSnapshot)
+
+        let potentialKingPosition = null
+        if (selectedFigure.name === 'K' ) {
+          potentialKingPosition = {
+            x: move[0],
+            y: move[1]
+          }
+        }
+  
+        const opponentMoves = opponentPlayer.getAttackMoves(tmpSnapshot)
+  
+        // Если нет шаха, то добавляем ход, как возможный
+        if (!this.checkShach(opponentMoves, potentialKingPosition)) {
+          possibleMoves.push(move)  
+        }
+      }) 
+      return possibleMoves   
+    }
+    return []
+  }
+
+  /*
+    Получить все ходы игрока, по которым он может атаковать
   */
   getAttackMoves(cells) {
     let result = []
     this.figures.forEach(figure => {  
-      let figureName = (figure.color === 'black') ? '_' + figure.name : figure.name
+      const figureName = (figure.color === 'black') ? '_' + figure.name : figure.name
 
       if (cells[figure.getPositionPoint().y][figure.getPositionPoint().x] === figureName) {
         const moves = (figure.name === 'P') ? figure.getMoves(cells, [], true) : figure.getMoves(cells)
@@ -27,28 +65,32 @@ class Player {
           result = [...result, ...moves]
         }
       }
-
     })
+
     return result
   }
 
+  /*
+    Получить позицию короля
+  */
   getKingPosition() {
     return this.figures.find(figure => figure.name === 'K').getPositionPoint()
   }
 
+  /*
+    Проверить на шах
+    @opponentMoves - все ходы оппонента
+    @customKingPosition - потенциальная позиция короля
+  */
   checkShach(opponentMoves, potentialKingPosition = null) {
     const kingPosition = potentialKingPosition ? potentialKingPosition : this.getKingPosition()
 
-    console.log('Opponent Moves for snapshot')
-    console.log(opponentMoves)
-    console.log(kingPosition)
+    //console.log('Opponent Moves for snapshot')
+    //console.log(opponentMoves)
+    //console.log(kingPosition)
+
     // Но если есть возможность срубить фигуру, то пропускаем 
-    console.log(opponentMoves.find(move => kingPosition.y === move[0] && kingPosition.x === move[1]) )
-    opponentMoves.find(move => kingPosition.x === move[0] && kingPosition.y === move[1]) 
-    ? this.isShach = true  
-    : this.isShach = false
-    console.log(this.isShach)
-    return this.isShach
+    return opponentMoves.find(move => kingPosition.x === move[0] && kingPosition.y === move[1]) ? true : false
   }
 
 }
