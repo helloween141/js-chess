@@ -16,8 +16,7 @@ class Board {
   constructor() {
     this.cellsLayer = new Konva.Layer()
     this.figuresLayer = new Konva.Layer()
-    this.animLayer = new Konva.Layer()
-    
+
     this.cells = new Array(BOARD_CELLS_COUNT).fill(null).map(() => new Array(BOARD_CELLS_COUNT).fill(null))
 
     this.figuresSprite = new Image()
@@ -27,6 +26,9 @@ class Board {
     }    
   }
 
+  /*
+    Инициализация игрового поля
+  */
   initialize() {
     /*const defaultGameField = [
       ['_R', '_N', '_B', '', '_K', '_B', '_N', ''],
@@ -48,7 +50,6 @@ class Board {
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
       ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
     ]
-
 
     let oddColor
     let evenColor
@@ -78,9 +79,12 @@ class Board {
         }
       }
     }
-
   }
 
+  /*
+    Получить фигуры по цвету
+    @color - цвет (white, black)
+  */
   getFiguresByColor(color) {
     const result = []
     for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
@@ -94,7 +98,11 @@ class Board {
     return result
   }
 
-  // Выбрать ячейку
+  /*
+    Выбрать ячейку
+    @posX - позиция по X
+    @posY - позиция по Y
+  */
   selectCell(posX, posY) {
     if (posX >= 0 && posX < BOARD_CELLS_COUNT && posY >= 0 && posY < BOARD_CELLS_COUNT) {
       this.clearSelection()
@@ -104,6 +112,9 @@ class Board {
     } 
   }
 
+  /*
+    Получить слепок игрового поля (в текстовом виде)
+  */
   getSnapshot() {
     let snapshot = []
     for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
@@ -116,7 +127,9 @@ class Board {
     return snapshot
   }
 
-  // Убрать подсветку
+  /*
+    Очистить подсветку клеток
+  */
   clearSelection() {
     for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
       for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
@@ -126,6 +139,10 @@ class Board {
     }
   }
 
+  /*
+    Обновить перемещение фигуры
+    @move - объект хода
+  */
   updateMove(move) {
     return new Promise(resolve => {
       // Окончание анимации
@@ -151,7 +168,11 @@ class Board {
       })
     })
   }
-
+  
+  /*
+    Отрисовать подписи клеток
+    @i - номер клетки
+  */
   _drawLabels(i) {
     const middleOffset = Math.round(CELL_SIZE / 2) + (i * CELL_SIZE) + 20
 
@@ -187,29 +208,35 @@ class Board {
     )
   }
 
-  _addLabel(posX, posY, text, rotation = 1) {
+  /*
+    Добавить подпись
+    @posX - позиция подписи X
+    @posY - позиция подписи Y
+    @text - текст
+  */
+  _addLabel(posX, posY, text) {
     return new Konva.Text({
       x: posX,
       y: posY,
       text: text,
       fontSize: 25,
       fontFamily: 'Calibri',
-      fill: LABEL_COLOR,
-      rotation: rotation
+      fill: LABEL_COLOR
     })
   }
 
+  /*
+    Отрисовать игровое поле
+  */
   render() {
     this.figuresLayer.removeChildren()
     this.cellsLayer.removeChildren()
-    this.animLayer.removeChildren()
-    
     for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
       for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
         let cell = this.cells[i][j]
         if (cell) {
           this.cellsLayer.add(cell.getShape())
-  
+
           if (cell.figure) {
             this.figuresLayer.add(cell.getFigure().getShape())
           }
@@ -218,6 +245,8 @@ class Board {
       this._drawLabels(i)
     }
   }
+
+
 }
 
 export default Board

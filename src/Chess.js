@@ -104,6 +104,8 @@ class Chess {
           this.currentPlayer = this.playerOne
         }
 
+        this.currentPlayer.figures = this.board.getFiguresByColor(this.currentPlayer.color)
+        
         if (!this.checkCheckmate()) {
           this.gameLoop()
         }
@@ -112,8 +114,11 @@ class Chess {
     } else {
       // Вызов хода AI, если он существует
       if (!this.currentPlayer.isHuman) {
-          const movePos = this.currentPlayer.getMove(this.board.getSnapshot(), this.getOpponentPlayer())
-          this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
+          setTimeout(() => {
+            const movePos = this.currentPlayer.getMove(this.board.getSnapshot(), this.getOpponentPlayer())
+            this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
+          }, 1000)
+
       }
     }
   }
@@ -211,8 +216,7 @@ class Chess {
       this.board.render()
       this.stage.add(
         this.board.cellsLayer,
-        this.board.figuresLayer,
-        this.board.animLayer
+        this.board.figuresLayer
       )
     }
   }
