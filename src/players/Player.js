@@ -23,13 +23,10 @@ class Player {
   
       playerMoves.forEach(move => {
         let tmpSnapshot = JSON.parse(JSON.stringify(cellsSnapshot))
-  
-        console.log(`Potential move: ${move}`)
+
         tmpSnapshot[move[1]][move[0]] = (selectedFigure.color === 'black') ? '_' + selectedFigure.name : selectedFigure.name
         tmpSnapshot[selectedFigure.getPositionPoint().y][selectedFigure.getPositionPoint().x] = ''
-        //console.log(`Potential snapshot`)
-        //console.log(tmpSnapshot)
-        //console.log(selectedFigure.name)
+
         let potentialKingPosition = null
         if (selectedFigure.name === 'K') {
           potentialKingPosition = {
@@ -84,12 +81,6 @@ class Player {
   */
   checkShach(opponentMoves, potentialKingPosition = null) {
     const kingPosition = potentialKingPosition ? potentialKingPosition : this.getKingPosition()
-
-    //console.log('Opponent Moves for snapshot')
-    //console.log(opponentMoves)
-    //console.log(kingPosition)
-    //console.log(opponentMoves.find(move => kingPosition.x === move[0] && kingPosition.y === move[1]) ? true : false)
- 
     return opponentMoves.find(move => kingPosition.x === move[0] && kingPosition.y === move[1]) ? true : false
   }
 

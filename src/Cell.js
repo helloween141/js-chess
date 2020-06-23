@@ -25,6 +25,9 @@ class Cell {
     })
   }
 
+  /*
+    Получить форму ячейки
+  */
   getShape() {
     if (this.isSelect) {
       this.shape.attrs.fill = CELL_SELECT_COLOR
@@ -35,15 +38,24 @@ class Cell {
     }
     return this.shape
   }
-
+  
+  /*
+    Получить фигуру на ячейке
+  */
   getFigure() {
     return this.figure
   }
 
+  /*
+    Установить подсветку возможных ходов
+  */
   setHighlight() {
     this.isHighlight = true
   }
 
+  /*
+    Установить подсветку выбранной ячейки
+  */
   setSelect() {
     this.isSelect = true
   }

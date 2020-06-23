@@ -3,6 +3,11 @@ class GameLog {
         this.$el = document.getElementById('log')
     }
 
+    /*
+      Добавить информацию о ходе в лог
+      @color - цвет игрока
+      @move - объект хода
+    */
     addMoveInfo(color, move) {
         const positionInfo = move.getInfo()
 
@@ -10,11 +15,18 @@ class GameLog {
         this.$el.scrollTop = this.$el.scrollHeight
     }
 
+    /*
+      Добавить кастомную информацию в лог
+      @text - текст
+    */
     addCustomInfo(text) {
         this.$el.value += `${text} \n\r`
         this.$el.scrollTop = this.$el.scrollHeight
     }
 
+    /*
+       Очистить лог
+    */
     clear() {
         this.$el.value = ''
     }

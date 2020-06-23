@@ -4,7 +4,10 @@ import Chess from './Chess'
 const chess = new Chess()
 
 document.getElementById('start').addEventListener('click', (e) => {
-  chess.startGame()
+  const gameModeSelector = document.getElementById('game-mode')
+  const gameModeValue = +gameModeSelector.options[gameModeSelector.selectedIndex].value
+
+  chess.startGame(gameModeValue)
 })
 
 

@@ -1,6 +1,9 @@
 import { BOARD_CELLS_COUNT, CELL_SIZE } from './global'
 
 class Figure {
+  /*
+    Получить позицию (вектор)
+  */
   getPositionPoint() {
     return {
       x: this.x,
@@ -8,6 +11,11 @@ class Figure {
     }
   }
 
+  /*
+    Установить позицию (вектор)
+    @x - координата X
+    @y - координата Y
+  */
   setPositionPoint(x, y) {
     this.x = x
     this.y = y
@@ -15,6 +23,9 @@ class Figure {
     this.setPositionPixels(this.toPixels(x), this.toPixels(y))
   }
 
+  /*
+    Получить позицию (пиксели)
+  */
   getPositionPixels() {
     return {
       imagePosX: this.image.attrs.x,
@@ -22,18 +33,34 @@ class Figure {
     }
   }
 
+  /*
+    Установить позицию (пиксели)
+    @x - координата X
+    @y - координата Y   
+  */
   setPositionPixels(x, y) {
     this.image.position({x, y})
   }
   
+  /*
+    Получить форму фигуры
+  */
   getShape() {
     return this.image
   }
 
+  /*
+    Перевести в пиксели
+    @val - позиция ячейки (x или y)
+  */
   toPixels(val) {
     return (CELL_SIZE / 2) + (val * CELL_SIZE) - 2
   }
 
+  /*
+    Получить цвет фигуры на слепке
+    @figure - фигура
+  */
   getFigureSnapshotColor(figure) {
     if (figure) {
       return figure[0] === '_' ? 'black' : 'white'
@@ -42,14 +69,18 @@ class Figure {
     }
   }
 
-  createImage(sprite) {
-    const width = sprite.width / 6
-    const height = sprite.height / 2
+  /*
+    Создать изображение из тайлсета
+    @tileset - тайлсет
+  */
+  createImage(tileset) {
+    const width = tileset.width / 6
+    const height = tileset.height / 2
 
     const figureImg = new Konva.Image({
       width,
       height,
-      image: sprite,
+      image: tileset,
     })
 
     return figureImg.crop({
@@ -59,23 +90,20 @@ class Figure {
       height
     })
   }
- 
-  canMove(x, y, cells, excluded = []) {
-    if (x >= 0 && x < BOARD_CELLS_COUNT && y >= 0 && y < BOARD_CELLS_COUNT) {
-      if (excluded.length > 0) {
-        // Запрещенные ходы
-        const isProhibitedMove = excluded.find(move => move[0] === x && move[1] === y)
-        if (isProhibitedMove) {
-          return false
-        } 
-      }
 
+  /*
+    Проверить возможность хода
+    @x - координата X
+    @y - координата Y
+    @cells - массив ячеек
+  */
+  canMove(x, y, cells) {
+    if (x >= 0 && x < BOARD_CELLS_COUNT && y >= 0 && y < BOARD_CELLS_COUNT) {
       if (this.name !== 'P') {
         return this.getFigureSnapshotColor(cells[y][x]) === this.color ? false : true
       } else {
         return true
       }
-
     }
     return false
   }

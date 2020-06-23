@@ -19,7 +19,10 @@ class Chess {
     @PlayerTypeOne - тип игрока №1
     @PlayerTypeTwo - тип игрока №2
   */
-  startGame(PlayerTypeOne = AI, PlayerTypeTwo = AI) {
+  startGame(gameMode = 1) {
+
+    const Players = this.getPlayersTypes(gameMode)
+
     // Сборка мусора, если игра уже была создана
     if (this.board) {
       this._destroy()
@@ -30,8 +33,8 @@ class Chess {
 
     // Создание игроков
     const colors = this.rollColor()
-    this.playerOne = new PlayerTypeOne('Игрок 1', colors.colorOne, this.board.getFiguresByColor(colors.colorOne))
-    this.playerTwo = new PlayerTypeTwo('Игрок 2', colors.colorTwo, this.board.getFiguresByColor(colors.colorTwo))
+    this.playerOne = new Players.playerTypeOne('Игрок 1', colors.colorOne, this.board.getFiguresByColor(colors.colorOne))
+    this.playerTwo = new Players.playerTypeTwo('Игрок 2', colors.colorTwo, this.board.getFiguresByColor(colors.colorTwo))
 
     // Определение игрока, который ходит первым
     this.currentPlayer = this.playerOne.isCurrent ? this.playerOne : this.playerTwo
@@ -172,6 +175,28 @@ class Chess {
       })(); 
 
     })
+  }
+
+  getPlayersTypes(gameMode) {
+    
+    switch(gameMode) {
+      case 2:
+        return {
+          playerTypeOne: Human,
+          playerTypeTwo: AI,
+        }
+      case 3:
+        return {
+          playerTypeOne: AI,
+          playerTypeTwo: AI,
+        }
+    }
+
+    return {
+      playerTypeOne: Human,
+      playerTypeTwo: Human,
+    }
+
   }
 
   /*
