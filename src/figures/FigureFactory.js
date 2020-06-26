@@ -6,6 +6,12 @@ import King from './types/King'
 import Queen from './types/Queen'
 
 class FigureFactory {
+  /*
+    Создать фигуру
+    @name - название
+    @color - цвет
+    @sprite - спрайт
+  */
   static create({ name, color, sprite }) {
     switch (name) {
       case 'P':

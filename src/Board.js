@@ -31,15 +31,16 @@ class Board {
   */
   initialize() {
     /*const defaultGameField = [
-      ['_R', '_N', '_B', '', '_K', '_B', '_N', ''],
+      ['_R', '', '', '', '_K', '', '', '_R'],
       ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
-      ['', '', '', '', '', '_Q', '_P', ''],
-      ['', '', '', '', '', '', '_P', 'K'],
-      ['', '', '', '', '', '', '_P', ''],
-      ['', '', '', '', '', '', '_Q', '_R'],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      ['R', 'N', 'B', 'Q', '', 'B', 'N', 'R']
+      ['R', '', '', '', 'K', '', '', 'R']
     ]*/
+
     const defaultGameField = [
       ['_R', '_N', '_B', '_Q', '_K', '_B', '_N', '_R'],
       ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
@@ -147,6 +148,7 @@ class Board {
     return new Promise(resolve => {
       // Окончание анимации
       move.runAnimation().then(figure => {
+
       // Если пешка дошла до противоположного конца, то она превращается в ферзя
         if (figure.name === 'P' && (move.endPosPointer.y === 0 || move.endPosPointer.y === (BOARD_CELLS_COUNT - 1))) {
           figure = FigureFactory.create({
@@ -156,13 +158,34 @@ class Board {
           })
           figure.setPositionPoint(move.endPosPointer.x, move.endPosPointer.y)
         }
-            
-        if (figure.name === 'K') {
-          this.canCastling = false
-        }
-     
+             
         this.cells[move.endPosPointer.y][move.endPosPointer.x].figure = figure
         this.cells[move.startPosPointer.y][move.startPosPointer.x].figure = null
+
+        // Если фигура является королем или ладьей, то рокировка для короля невозможна
+        if (figure.name === 'K' || figure.name === 'R') {
+          figure.canCastling = false
+          
+          if (figure.name === 'K') {
+            if (move.startPosPointer.x + 2 === move.endPosPointer.x) {
+              const rookFigure = this.cells[move.endPosPointer.y][BOARD_CELLS_COUNT - 1].figure
+              this.cells[move.endPosPointer.y][move.endPosPointer.x - 1].figure = rookFigure
+              this.cells[move.endPosPointer.y][BOARD_CELLS_COUNT - 1].figure = null
+
+              rookFigure.setPositionPoint(move.endPosPointer.x - 1, move.endPosPointer.y)
+            }
+
+            if (move.startPosPointer.x - 2 === move.endPosPointer.x) {
+              const rookFigure = this.cells[move.endPosPointer.y][0].figure
+              this.cells[move.endPosPointer.y][move.endPosPointer.x + 1].figure = rookFigure
+              this.cells[move.endPosPointer.y][0].figure = null
+
+              rookFigure.setPositionPoint(move.endPosPointer.x + 1, move.endPosPointer.y)
+            }
+            
+          }
+        }
+
 
         resolve(true)
       })

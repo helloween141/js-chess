@@ -11,10 +11,9 @@ class Pawn extends Figure {
   /*
     Получить все возможные ходы у пешки
     @cells: ячейки
-    @excluded: ходы противника
     @movesOnly: флаг для получения только мест атаки (необходимо для проверки на шах)
   */
-  getMoves(cells, excluded = [], movesOnly = false) {
+  getMoves(cells, movesOnly = false) {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
     let result = []

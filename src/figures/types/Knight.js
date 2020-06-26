@@ -8,7 +8,7 @@ class Knight extends Figure {
     this.image = this.createImage(sprite)
   }
 
-  getMoves(cells, excluded = []) {
+  getMoves(cells) {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
 

@@ -26,7 +26,7 @@ class AI extends Player {
     return result
   }
 
-  getMove(cells, opponentPlayer) {
+  getMovePosition(cells, opponentPlayer) {
     const possibleActions = this._getActions(cells, opponentPlayer)
     
     if (possibleActions.length > 0) {

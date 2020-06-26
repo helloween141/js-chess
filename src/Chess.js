@@ -27,10 +27,9 @@ class Chess {
     if (this.board) {
       this._destroy()
     }
-
+    
     // Инициализация игрового поля
     this.board.initialize()
-
     // Создание игроков
     const colors = this.rollColor()
     this.playerOne = new Players.playerTypeOne('Игрок 1', colors.colorOne, this.board.getFiguresByColor(colors.colorOne))
@@ -118,7 +117,7 @@ class Chess {
       // Вызов хода AI, если он существует
       if (!this.currentPlayer.isHuman) {
           setTimeout(() => {
-            const movePos = this.currentPlayer.getMove(this.board.getSnapshot(), this.getOpponentPlayer())
+            const movePos = this.currentPlayer.getMovePosition(this.board.getSnapshot(), this.getOpponentPlayer())
             this.gameLoop(new Move(this.currentPlayer.selectedFigure, movePos.startPosPointer, movePos.endPosPointer))
           }, 1000)
 
@@ -132,8 +131,8 @@ class Chess {
   checkCheckmate() {
     const opponentMoves = this.getOpponentPlayer().getAttackMoves(this.board.getSnapshot())
 
-    if (this.currentPlayer.checkShach(opponentMoves)) {
-      this.gameLog.addCustomInfo(`${this.getOpponentPlayer().color} ставят шах`)
+    if (this.currentPlayer.checkSchach(opponentMoves)) {
+      this.gameLog.addCustomInfo(`${this.getOpponentPlayer().color} set schach`)
 
       let checkmateFlag = true
       this.currentPlayer.figures.forEach(figure => {
@@ -144,7 +143,7 @@ class Chess {
       })
  
       if (checkmateFlag) {
-        this.gameLog.addCustomInfo(`Партия окончена. ${this.getOpponentPlayer().color} ставят мат`)
+        this.gameLog.addCustomInfo(`Game over! ${this.getOpponentPlayer().color} set checkmate`)
         return true
       }
     }

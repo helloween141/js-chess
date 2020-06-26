@@ -17,6 +17,9 @@ class Move {
         }       
     }
 
+    /*
+      Получить информацию по ходу
+    */
     getInfo() {
       return {
         startX: String.fromCharCode(97 + this.startPosPointer.x),
@@ -26,6 +29,9 @@ class Move {
       }
     }
 
+    /*
+      Обработка анимации
+    */
     runAnimation() {
         return new Promise(resolve => {
           let { imagePosX, imagePosY } = this.figure.getPositionPixels()
