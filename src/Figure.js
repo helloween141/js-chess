@@ -1,10 +1,9 @@
-import { BOARD_CELLS_COUNT, ANIMATION_SPEED, CELL_SIZE } from './global'
+import { BOARD_CELLS_COUNT, CELL_SIZE } from './global'
 
 class Figure {
-  constructor() {
-
-  }
-
+  /*
+    Получить позицию (вектор)
+  */
   getPositionPoint() {
     return {
       x: this.x,
@@ -12,39 +11,76 @@ class Figure {
     }
   }
 
+  /*
+    Установить позицию (вектор)
+    @x - координата X
+    @y - координата Y
+  */
   setPositionPoint(x, y) {
     this.x = x
     this.y = y
 
-    this.setImagePositionPixels(x, y)
+    this.setPositionPixels(this.toPixels(x), this.toPixels(y))
   }
 
-  getImagePositionPixels() {
+  /*
+    Получить позицию (пиксели)
+  */
+  getPositionPixels() {
     return {
       imagePosX: this.image.attrs.x,
       imagePosY: this.image.attrs.y
     }
   }
-  
-  setImagePositionPixels(x, y) {
-    this.getImage().position({
-      x: CELL_SIZE / 2 + x * CELL_SIZE - 2,
-      y: CELL_SIZE / 2 + y * CELL_SIZE - 2,
-    })
+
+  /*
+    Установить позицию (пиксели)
+    @x - координата X
+    @y - координата Y   
+  */
+  setPositionPixels(x, y) {
+    this.image.position({x, y})
   }
   
-  getImage() {
+  /*
+    Получить форму фигуры
+  */
+  getShape() {
     return this.image
   }
 
-  createImage(sprite) {
-    const width = sprite.width / 6
-    const height = sprite.height / 2
+  /*
+    Перевести в пиксели
+    @val - позиция ячейки (x или y)
+  */
+  toPixels(val) {
+    return (CELL_SIZE / 2) + (val * CELL_SIZE) - 2
+  }
+
+  /*
+    Получить цвет фигуры на слепке
+    @figure - фигура
+  */
+  getFigureSnapshotColor(figure) {
+    if (figure) {
+      return figure[0] === '_' ? 'black' : 'white'
+    } else {
+      return null
+    }
+  }
+
+  /*
+    Создать изображение из тайлсета
+    @tileset - тайлсет
+  */
+  createImage(tileset) {
+    const width = tileset.width / 6
+    const height = tileset.height / 2
 
     const figureImg = new Konva.Image({
       width,
       height,
-      image: sprite,
+      image: tileset,
     })
 
     return figureImg.crop({
@@ -54,43 +90,22 @@ class Figure {
       height
     })
   }
- 
+
+  /*
+    Проверить возможность хода
+    @x - координата X
+    @y - координата Y
+    @cells - массив ячеек
+  */
   canMove(x, y, cells) {
     if (x >= 0 && x < BOARD_CELLS_COUNT && y >= 0 && y < BOARD_CELLS_COUNT) {
       if (this.name !== 'P') {
-        return cells[y][x].figure && cells[y][x].figure.color === this.color
-          ? false
-          : true
+        return this.getFigureSnapshotColor(cells[y][x]) === this.color ? false : true
       } else {
         return true
       }
     }
     return false
-  }
-  
-  updateMoveAnimation(finishAnimationCallback) {
-    let { imagePosX, imagePosY } = this.getImagePositionPixels()
-
-    // Движение по OY
-    if (this.moveVector.y < 0)
-      imagePosY = (imagePosY > this.endPosPixels.y) ? imagePosY - ANIMATION_SPEED : this.endPosPixels.y 
-    else
-      imagePosY = (imagePosY < this.endPosPixels.y) ? imagePosY + ANIMATION_SPEED : this.endPosPixels.y
-
-    // Движение по OX
-    if (this.moveVector.x < 0)
-      imagePosX = (imagePosX > this.endPosPixels.x) ? imagePosX - ANIMATION_SPEED : this.endPosPixels.x
-    else
-      imagePosX = (imagePosX < this.endPosPixels.x) ? imagePosX + ANIMATION_SPEED : this.endPosPixels.x
-
-    if ((imagePosX !== this.endPosPixels.x) || (imagePosY !== this.endPosPixels.y)) {
-        this.image.position({
-          x: imagePosX,
-          y: imagePosY
-        })
-    } else {
-      finishAnimationCallback(this) 
-    }
   }
 
 }

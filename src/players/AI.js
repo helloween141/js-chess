@@ -1,43 +1,54 @@
-import { BOARD_CELLS_COUNT } from '../global'
+import Player from './Player'
 
-class AI {
-  constructor(color) {
+class AI extends Player {
+  constructor(name, color, figures) {
+    super(name, color, figures, false)
+    
+    this.name = name
     this.color = color
+    this.figures = figures
     this.selectedFigure = null
   }
 
-  _getPossibleSteps(cells) {
-    let result = []
-    for (let i = 0; i < BOARD_CELLS_COUNT; i++) {
-      for (let j = 0; j < BOARD_CELLS_COUNT; j++) {
-        const figure = cells[j][i].figure
-        if (figure && figure.color === this.color) {
-          /*
-                Всякие разные проверки (шах, возможность срубить и так далее)
-          */
-          const moves = figure.getMoves(cells)
-          if (moves.length > 0) {
-            result.push({
-              figure,
-              moves,
-            })
-          }
-        }
+  _getActions(cells, opponentPlayer) {
+    const result = []
+
+    this.figures.forEach(figure => {
+      const moves = this.getAllPossibleMoves(figure, opponentPlayer, cells)
+
+      if (moves.length > 0) {
+        result.push({
+          figure,
+          moves,
+        })
       }
-    }
+    })
     return result
   }
 
-  getMove(cells) {
-    const possibleSteps = this._getPossibleSteps(cells)
-    if (possibleSteps.length > 0) {
-      const figureId = Math.floor(possibleSteps.length * Math.random())
-      const figureMoves = possibleSteps[figureId].moves
-      this.selectedFigure = possibleSteps[figureId].figure
+  getMovePosition(cells, opponentPlayer) {
+    const possibleActions = this._getActions(cells, opponentPlayer)
+    
+    if (possibleActions.length > 0) {
+      const actionId = Math.floor(possibleActions.length * Math.random())
 
-      return figureMoves[Math.floor(figureMoves.length * Math.random())]
+      const figure = possibleActions[actionId].figure
+      const moveTo = possibleActions[actionId].moves[Math.floor(possibleActions[actionId].moves.length * Math.random())] 
+      
+      this.selectedFigure = figure
+
+      return {
+        startPosPointer: {
+          x: figure.getPositionPoint().x,
+          y: figure.getPositionPoint().y
+        },
+        endPosPointer: {
+          x: moveTo[0],
+          y: moveTo[1]
+        }
+      }
     } else {
-      return []
+      return null
     }
   }
 }

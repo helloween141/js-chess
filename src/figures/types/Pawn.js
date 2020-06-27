@@ -8,41 +8,39 @@ class Pawn extends Figure {
     this.image = this.createImage(sprite)
   }
 
-  getMoves(cells) {
+  /*
+    Получить все возможные ходы у пешки
+    @cells: ячейки
+    @movesOnly: флаг для получения только мест атаки (необходимо для проверки на шах)
+  */
+  getMoves(cells, movesOnly = false) {
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
     let result = []
-
+    
     // Движение
-    if (
-      this.canMove(x, y + 1 * sign, cells) &&
-      !cells[y + 1 * sign][x].figure
-    ) {
-      result.push([x, y + 1 * sign])
-
-      if ((y === 1 || y === 6) && !cells[y + 2 * sign][x].figure) {
-        result.push([x, y + 2 * sign])
+    if (!movesOnly) {
+      if (this.canMove(x, y + 1 * sign, cells) && !cells[y + 1 * sign][x]) {
+        result.push([x, y + 1 * sign])
+        
+        if ((y === 1 || y === 6) && this.canMove(x, y + 2 * sign, cells) && !cells[y + 2 * sign][x]) {
+          result.push([x, y + 2 * sign])
+        }
       }
     }
-
-    // Рубка по правой диагонали
-    if (
-      this.canMove(x + 1 * sign, y + 1 * sign, cells) &&
-      cells[y + 1 * sign][x + 1 * sign].figure &&
-      cells[y + 1 * sign][x + 1 * sign].figure.color !== this.color
-    ) {
+    
+    // Атака по правой диагонали
+    if ((this.canMove(x + 1 * sign, y + 1 * sign, cells) && cells[y + 1 * sign][x + 1 * sign] && 
+        this.getFigureSnapshotColor(cells[y + 1 * sign][x + 1 * sign]) !== this.color) || movesOnly) {
       result.push([x + 1 * sign, y + 1 * sign])
     }
 
-    // Рубка по левой диагонали
-    if (
-      this.canMove(x - 1 * sign, y + 1 * sign, cells) &&
-      cells[y + 1 * sign][x - 1 * sign].figure &&
-      cells[y + 1 * sign][x - 1 * sign].figure.color !== this.color
-    ) {
+    // Атака по левой диагонали
+    if ((this.canMove(x - 1 * sign, y + 1 * sign, cells) && cells[y + 1 * sign][x - 1 * sign] &&
+        this.getFigureSnapshotColor(cells[y + 1 * sign][x - 1 * sign]) !== this.color) || movesOnly) {
       result.push([x - 1 * sign, y + 1 * sign])
     }
-
+   
     return result
   }
 

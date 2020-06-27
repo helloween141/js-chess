@@ -17,7 +17,7 @@ class Bishop extends Figure {
     while (this.canMove(x + k * sign, y + k * sign, cells)) {
       result.push([x + k * sign, y + k * sign])
 
-      if (cells[y + k * sign][x + k * sign].figure) {
+      if (cells[y + k * sign][x + k * sign]) {
         break
       }
       k++
@@ -27,7 +27,7 @@ class Bishop extends Figure {
     while (this.canMove(x - k * sign, y + k * sign, cells)) {
       result.push([x - k * sign, y + k * sign])
 
-      if (cells[y + k * sign][x - k * sign].figure) {
+      if (cells[y + k * sign][x - k * sign]) {
         break
       }
       k++
@@ -37,7 +37,7 @@ class Bishop extends Figure {
     while (this.canMove(x - k * sign, y - k * sign, cells)) {
       result.push([x - k * sign, y - k * sign])
 
-      if (cells[y - k * sign][x - k * sign].figure) {
+      if (cells[y - k * sign][x - k * sign]) {
         break
       }
       k++
@@ -47,7 +47,7 @@ class Bishop extends Figure {
     while (this.canMove(x + k * sign, y - k * sign, cells)) {
       result.push([x + k * sign, y - k * sign])
 
-      if (cells[y - k * sign][x + k * sign].figure) {
+      if (cells[y - k * sign][x + k * sign]) {
         break
       }
       k++

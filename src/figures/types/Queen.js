@@ -13,11 +13,11 @@ class Queen extends Figure {
     let { x, y } = this.getPositionPoint()
     let result = []
     let k = 1
-
+    
     while (this.canMove(x, y + k * sign, cells)) {
       result.push([x, y + k * sign])
 
-      if (cells[y + k * sign][x].figure) {
+      if (cells[y + k * sign][x]) {
         break
       }
       k++
@@ -27,7 +27,7 @@ class Queen extends Figure {
     while (this.canMove(x, y - k * sign, cells)) {
       result.push([x, y - k * sign])
 
-      if (cells[y - k * sign][x].figure) {
+      if (cells[y - k * sign][x]) {
         break
       }
       k++
@@ -35,9 +35,10 @@ class Queen extends Figure {
 
     k = 1
     while (this.canMove(x - k * sign, y, cells)) {
+
       result.push([x - k * sign, y])
 
-      if (cells[y][x - k * sign].figure) {
+      if (cells[y][x - k * sign]) {
         break
       }
       k++
@@ -47,7 +48,7 @@ class Queen extends Figure {
     while (this.canMove(x + k * sign, y, cells)) {
       result.push([x + k * sign, y])
 
-      if (cells[y][x + k * sign].figure) {
+      if (cells[y][x + k * sign]) {
         break
       }
       k++
@@ -57,7 +58,7 @@ class Queen extends Figure {
     while (this.canMove(x + k * sign, y + k * sign, cells)) {
       result.push([x + k * sign, y + k * sign])
 
-      if (cells[y + k * sign][x + k * sign].figure) {
+      if (cells[y + k * sign][x + k * sign]) {
         break
       }
       k++
@@ -67,7 +68,7 @@ class Queen extends Figure {
     while (this.canMove(x - k * sign, y + k * sign, cells)) {
       result.push([x - k * sign, y + k * sign])
 
-      if (cells[y + k * sign][x - k * sign].figure) {
+      if (cells[y + k * sign][x - k * sign]) {
         break
       }
       k++
@@ -77,7 +78,7 @@ class Queen extends Figure {
     while (this.canMove(x - k * sign, y - k * sign, cells)) {
       result.push([x - k * sign, y - k * sign])
 
-      if (cells[y - k * sign][x - k * sign].figure) {
+      if (cells[y - k * sign][x - k * sign]) {
         break
       }
       k++
@@ -87,12 +88,12 @@ class Queen extends Figure {
     while (this.canMove(x + k * sign, y - k * sign, cells)) {
       result.push([x + k * sign, y - k * sign])
 
-      if (cells[y - k * sign][x + k * sign].figure) {
+      if (cells[y - k * sign][x + k * sign]) {
         break
       }
       k++
     }
-
+ 
     return result
   }
 

@@ -15,7 +15,7 @@
     margin-left: 10px;
 }
 
-#container #info button {
+#container #info button, #container #info #game-mode  {
     width: 100%;
     margin-bottom: 20px;
 }

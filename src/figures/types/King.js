@@ -6,62 +6,42 @@ class King extends Figure {
     this.name = name
     this.color = color
     this.image = this.createImage(sprite)
-
     this.canCastling = true // Возможность рокировки
   }
 
   getMoves(cells) {
+
     const sign = this.color === 'black' ? 1 : -1
     let { x, y } = this.getPositionPoint()
     let result = []
 
-    if (this.canMove(x, y + 1 * sign, cells)) {
-      result.push([x, y + 1 * sign])
-    }
+    let movesList = [
+      [x, y + 1 * sign],
+      [x, y - 1 * sign],
+      [x + 1 * sign, y],
+      [x + 1 * sign, y + 1 * sign],
+      [x - 1 * sign, y - 1 * sign],
+      [x + 1 * sign, y - 1 * sign],
+      [x - 1 * sign, y + 1 * sign],
+      [x - 1 * sign, y],
+    ]
+    
+    result = movesList.filter(move => this.canMove(move[0], move[1], cells)) 
 
-    if (this.canMove(x, y - 1 * sign, cells)) {
-      result.push([x, y - 1 * sign])
-    }
-
-    if (this.canMove(x + 1 * sign, y, cells)) {
-      result.push([x + 1 * sign, y])
-    }
-
-    if (this.canMove(x + 1 * sign, y + 1 * sign, cells)) {
-      result.push([x + 1 * sign, y + 1 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y - 1 * sign, cells)) {
-      result.push([x - 1 * sign, y - 1 * sign])
-    }
-
-    if (this.canMove(x + 1 * sign, y - 1 * sign, cells)) {
-      result.push([x + 1 * sign, y - 1 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y + 1 * sign, cells)) {
-      result.push([x - 1 * sign, y + 1 * sign])
-    }
-
-    if (this.canMove(x - 1 * sign, y, cells)) {
-      result.push([x - 1 * sign, y])
-    }
-
-    if (this.canCastling && (this.canMove(x - 2 * sign, y, cells) || this.canMove(x + 2 * sign, y, cells))) {
-      result.push([x - 1 * sign, y])
-    }   
-
+    // Возможность рокировки
     if (this.canCastling) {
-      if (this.canMove(x - 2 * sign, y, cells)) {
+
+      if (this.canMove(x - 1 * sign, y, cells) && this.canMove(x - 2 * sign, y, cells)) {
         result.push([x - 2 * sign, y])
       }
 
-      if (this.canMove(x + 2 * sign, y, cells)) {
+      if (this.canMove(x + 1 * sign, y, cells) && this.canMove(x + 2 * sign, y, cells)) {
         result.push([x + 2 * sign, y])
-      }      
-    }   
+      }
 
-    return result
+    } 
+
+    return result 
   }
 
   getCropPosition() {
