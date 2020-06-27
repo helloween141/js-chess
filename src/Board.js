@@ -16,7 +16,6 @@ class Board {
   constructor() {
     this.cellsLayer = new Konva.Layer()
     this.figuresLayer = new Konva.Layer()
-
     this.cells = new Array(BOARD_CELLS_COUNT).fill(null).map(() => new Array(BOARD_CELLS_COUNT).fill(null))
 
     this.figuresSprite = new Image()
