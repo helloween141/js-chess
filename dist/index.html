@@ -1,1 +1,32 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Chess js</title></head><body><div id="container"><div id="stage"></div><div id="info"><button id="start">Start</button> <select id="game-mode"><option value="1" selected="selected">Human vs Human</option><option value="2">Human vs Comp</option><option value="3">Comp vs Comp</option></select> <textarea id="log" readonly="readonly"></textarea></div></div><script src="bundle.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess js</title>
+  </head>
+  <body>
+    
+    <div id="container">
+      <div id="stage">
+      </div>
+      <div id="info">
+        <button id="start">Start</button>
+
+        <select id="game-mode">
+          <option value = "1" selected>
+            Human vs Human
+          </option>
+          <option value = "2" >
+            Human vs Comp
+          </option>
+          <option value = "3" >
+            Comp vs Comp
+          </option>         
+        </select>
+
+        <textarea id="log" readonly></textarea>
+      </div>      
+    </div>
+  <script src="bundle.js"></script></body>
+</html>

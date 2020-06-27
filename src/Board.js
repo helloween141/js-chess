@@ -20,7 +20,7 @@ class Board {
     this.cells = new Array(BOARD_CELLS_COUNT).fill(null).map(() => new Array(BOARD_CELLS_COUNT).fill(null))
 
     this.figuresSprite = new Image()
-    this.figuresSprite.src = `./src/assets/${FIGURES_SPRITE_NAME}`
+    this.figuresSprite.src = `./assets/${FIGURES_SPRITE_NAME}`
     this.figuresSprite.onload = () => {
       this.initialize()
     }    
@@ -30,17 +30,6 @@ class Board {
     Инициализация игрового поля
   */
   initialize() {
-    /*const defaultGameField = [
-      ['_R', '', '', '', '_K', '', '', '_R'],
-      ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      ['R', '', '', '', 'K', '', '', 'R']
-    ]*/
-
     const defaultGameField = [
       ['_R', '_N', '_B', '_Q', '_K', '_B', '_N', '_R'],
       ['_P', '_P', '_P', '_P', '_P', '_P', '_P', '_P'],
