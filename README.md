@@ -1,2 +1,2 @@
 # js-chess
-The chess game. Written in native JavaScript 
+The chess game. Written in pure JavaScript 
